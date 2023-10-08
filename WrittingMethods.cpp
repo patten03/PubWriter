@@ -93,37 +93,51 @@ void newFile()
 	int fileTypeInt = inputChoice(fileTypeString.size());
 
 	std::cout << "Выберите папку, где будете хранить файл" << std::endl;
+	std::string folder = findFolder();
 
 
+}
+
+std::string findFolder()
+{
 	bool agree = false;
-	std::string folder = "C:\\";
+	std::string folder = "C:";
 
 	while (agree != true)
 	{
-		std::vector<std::string> pathList;
-		pathList.push_back("Выбрать текущую папку");
-		pathList[0] = pathList[0] + " (" + folder + ")";
-		pathList.push_back("Назад");
+		std::vector<std::string> folderList;
+		folderList.push_back("Выбрать текущую папку");
+		folderList[0] = folderList[0] + " (" + folder + ")";
+		folderList.push_back("Назад");
 
-		for (auto const& dirFolder : std::filesystem::directory_iterator(folder))
+		for (auto const& dirFolder : std::filesystem::directory_iterator(folder + "\\"))
 		{
-			pathList.push_back(dirFolder.path().string());
-			//pathList.push_back(dirFolder.path().relative_path().string());
+			std::string path = dirFolder.path().string();
+			path = path.substr(path.rfind("\\") + 1, path.size());
+
+			folderList.push_back(path);
+			//folderList.push_back(dirFolder.path().string().substr();
 		}
 
-		ask(pathList);
-		int choice = inputChoice(pathList.size());
+		ask(folderList);
+		int choice = inputChoice(folderList.size());
 
 		switch (choice)
 		{
-		case 1: break; //save current folder
-		case 2: break;
-		default: folder = pathList[choice - 1] + "\\"; break;
+		case 1: agree = true; break; //save current folder
+		case 2: folder = folder.substr(0, folder.rfind("\\") + 1); break;
+		default: folder = folder + "\\" + folderList[choice - 1]; break;
 		}
 	}
+	return folder;
 }
 
 void editFile()
 {
 	return;
+}
+
+std::string findFile()
+{
+	return 0;
 }

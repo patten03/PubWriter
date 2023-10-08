@@ -19,6 +19,9 @@ void menu();
 
 void newFile();
 
+std::string findFolder();
+
 void editFile();
+std::string findFile();
 
 #endif //WRITTINGMETHODS
