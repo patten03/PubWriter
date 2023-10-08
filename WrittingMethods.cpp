@@ -45,7 +45,7 @@ int inputChoice(const int& end)
 		}
 		catch (const std::exception& ex)
 		{
-			std::cout << "¬ыбор выходит из диапазона или не €вл€етс€ числом!" << std::endl;
+			std::cout << "¬ыбор выходит из диапазона или не €вл€етс€ числом" << std::endl;
 		}
 	}
 
