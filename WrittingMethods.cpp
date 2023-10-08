@@ -107,8 +107,8 @@ void newFile()
 
 		for (auto const& dirFolder : std::filesystem::directory_iterator(folder))
 		{
-			//pathList.push_back(dirFolder.path().string());
-			pathList.push_back(dirFolder.path().relative_path().string());
+			pathList.push_back(dirFolder.path().string());
+			//pathList.push_back(dirFolder.path().relative_path().string());
 		}
 
 		ask(pathList);
@@ -118,7 +118,7 @@ void newFile()
 		{
 		case 1: break; //save current folder
 		case 2: break;
-		default: folder = folder + pathList[choice - 1] + "\\"; break;
+		default: folder = pathList[choice - 1] + "\\"; break;
 		}
 	}
 }
