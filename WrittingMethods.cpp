@@ -95,7 +95,29 @@ void newFile()
 	std::cout << "Выберите папку, где будете хранить файл" << std::endl;
 	std::string folder = findFolder();
 
+	std::cout << "Введите название файла" << std::endl << ">>";
+	std::string filename;
+	std::getline(std::cin, filename);
 
+	filename = filename + " " + currentTime();
+}
+
+std::string currentTime()
+{
+	std::string res;
+
+	std::time_t t = std::time(NULL);
+	std::tm now{};
+	localtime_s(&now, &t);
+
+	std::string date = std::to_string(now.tm_mday) + "."
+		+ std::to_string(now.tm_mon + 1) + "."
+		+ std::to_string(now.tm_year + 1900);
+	std::string clockTime = std::to_string(now.tm_hour) + ":"
+		+ std::to_string(now.tm_min);
+
+	res = clockTime + " " + date;
+	return res;
 }
 
 std::string findFolder()
@@ -108,6 +130,7 @@ std::string findFolder()
 		std::vector<std::string> folderList;
 		folderList.push_back("Выбрать текущую папку");
 		folderList[0] = folderList[0] + " (" + folder + ")";
+
 		folderList.push_back("Назад");
 
 		for (auto const& dirFolder : std::filesystem::directory_iterator(folder + "\\"))

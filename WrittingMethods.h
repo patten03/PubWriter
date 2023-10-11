@@ -8,6 +8,7 @@
 #include <ctime>
 #include <vector>
 #include <filesystem>
+#include <ctime>
 
 void standartSettings();
 
@@ -18,6 +19,8 @@ int inputChoice(const int& end);
 void menu();
 
 void newFile();
+
+std::string currentTime();
 
 std::string findFolder();
 
