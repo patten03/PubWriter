@@ -100,6 +100,18 @@ void newFile()
 	std::getline(std::cin, filename);
 
 	filename = filename + " " + currentTime();
+
+	std::string fullPath = folder + "\\" + filename + ".txt";
+	std::fstream fout;
+	fout.open(fullPath,std::ios::out);
+
+	fout << "Hello world!" << std::endl;
+
+	//std::cout << fout.is_open() << std::endl; // сделать проверку на открытие файла и задать отдельной функцией создание файла
+
+
+
+	fout.close();
 }
 
 std::string currentTime()
@@ -113,8 +125,20 @@ std::string currentTime()
 	std::string date = std::to_string(now.tm_mday) + "."
 		+ std::to_string(now.tm_mon + 1) + "."
 		+ std::to_string(now.tm_year + 1900);
-	std::string clockTime = std::to_string(now.tm_hour) + ":"
-		+ std::to_string(now.tm_min);
+
+
+	std::string clockTime;
+
+	if (now.tm_min < 10)
+	{
+		clockTime = std::to_string(now.tm_hour) + "."
+			+ "0" + std::to_string(now.tm_min);
+	}
+	else
+	{
+		clockTime = std::to_string(now.tm_hour) + "."
+			+ std::to_string(now.tm_min);
+	}
 
 	res = clockTime + " " + date;
 	return res;
