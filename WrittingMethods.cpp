@@ -49,6 +49,8 @@ int inputChoice(const int& end)
 		}
 	}
 
+	system("cls");
+
 	return choiceInt;
 }
 
@@ -98,6 +100,7 @@ void newFile()
 	std::cout << "Введите название файла" << std::endl << ">>";
 	std::string filename;
 	std::getline(std::cin, filename);
+	system("cls");
 
 	filename = filename + " " + currentTime();
 
@@ -105,13 +108,39 @@ void newFile()
 	std::fstream fout;
 	fout.open(fullPath,std::ios::out);
 
-	fout << "Hello world!" << std::endl;
+	//fout << "Hello world!" << std::endl;
 
 	//std::cout << fout.is_open() << std::endl; // сделать проверку на открытие файла и задать отдельной функцией создание файла
 
+	writeData(fout, fileTypeInt);
 
 
 	fout.close();
+}
+
+void writeData(std::fstream &stream, int fileType)
+{
+	enum fileTypes {book = 1, publisher = 2};
+
+	switch (fileType)
+	{
+	case book:
+	{
+		break;
+	}
+	case publisher:
+	{
+		std::string buff("_");
+
+		while (buff != "")
+		{
+			std::cout << "Введите " << std::endl << ">>";
+			std::getline(std::cin, buff);
+		}
+		break;
+	}
+	}
+
 }
 
 std::string currentTime()
@@ -151,29 +180,37 @@ std::string findFolder()
 
 	while (agree != true)
 	{
-		std::vector<std::string> folderList;
-		folderList.push_back("Выбрать текущую папку");
-		folderList[0] = folderList[0] + " (" + folder + ")";
-
-		folderList.push_back("Назад");
-
-		for (auto const& dirFolder : std::filesystem::directory_iterator(folder + "\\"))
+		try
 		{
-			std::string path = dirFolder.path().string();
-			path = path.substr(path.rfind("\\") + 1, path.size());
+			std::vector<std::string> folderList;
+			folderList.push_back("Выбрать текущую папку");
+			folderList[0] = folderList[0] + " (" + folder + ")";
 
-			folderList.push_back(path);
-			//folderList.push_back(dirFolder.path().string().substr();
+			folderList.push_back("Назад");
+
+			for (auto const& dirFolder : std::filesystem::directory_iterator(folder + "\\"))
+			{
+				std::string path = dirFolder.path().string();
+				path = path.substr(path.rfind("\\") + 1, path.size());
+
+				folderList.push_back(path);
+				//folderList.push_back(dirFolder.path().string().substr();
+			}
+
+			ask(folderList);
+			int choice = inputChoice(folderList.size());
+
+			switch (choice)
+			{
+			case 1: agree = true; break; //save current folder
+			case 2: folder = folder.substr(0, folder.rfind("\\") + 1); break; //return from last folder
+			default: folder = folder + "\\" + folderList[choice - 1]; break;
+			}
 		}
-
-		ask(folderList);
-		int choice = inputChoice(folderList.size());
-
-		switch (choice)
+		catch (const std::exception& ex)
 		{
-		case 1: agree = true; break; //save current folder
-		case 2: folder = folder.substr(0, folder.rfind("\\") + 1); break;
-		default: folder = folder + "\\" + folderList[choice - 1]; break;
+			std::cout << "Вы не можете выбрать этот файл или папку!" << std::endl;
+			folder = folder.substr(0, folder.rfind("\\") + 1);
 		}
 	}
 	return folder;

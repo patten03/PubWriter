@@ -20,6 +20,8 @@ void menu();
 
 void newFile();
 
+void writeData(std::fstream& stream, int fileType);
+
 std::string currentTime();
 
 std::string findFolder();
