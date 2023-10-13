@@ -22,6 +22,14 @@ void ask(const std::vector<std::string> choice)
 	}
 }
 
+void ask(const std::string* choice, const int& size)
+{
+	for (int i(0); i < size; i++)
+	{
+		std::cout << i + 1 << ". " << choice[i] << std::endl;
+	}
+}
+
 int inputChoice(const int& end)
 {
 	bool incorrectInput = true;
@@ -64,14 +72,21 @@ void menu()
 	{
 		std::cout << "Выберите задачу, которую хотите выполнить:" << std::endl;
 
-		std::vector<std::string> menuQuestions{
+		//std::vector<std::string> menuQuestions{
+		//	"Создать файл",
+		//	"Редактировать файл",
+		//	"Выйти из программы"
+		//};
+
+		std::string menuQuestions[]{
 			"Создать файл",
 			"Редактировать файл",
 			"Выйти из программы"
 		};
 
-		ask(menuQuestions);
-		int choice = inputChoice(menuQuestions.size());
+
+		ask(menuQuestions, sizeof(menuQuestions) / sizeof(menuQuestions[0]));
+		int choice = inputChoice(sizeof(menuQuestions));
 
 		switch (choice)
 		{
@@ -86,13 +101,18 @@ void newFile()
 {
 	std::cout << "Выберите тип файла" << std::endl;
 
-	std::vector<std::string> fileTypeString = {
-	"Создать файл для записи данных вида: <название издания> <вид издания> <издающая организация> <год выпуска>",
-	"Создать файл для записи данных вида: <название издания> <адрес редакции> <фамилия главного редактора>"
+	std::string fileTypeString[]{
+		"Создать файл для записи данных вида: <название издания> <вид издания> <издающая организация> <год выпуска>",
+		"Создать файл для записи данных вида: <название издания> <адрес редакции> <фамилия главного редактора>"
 	};
 
-	ask(fileTypeString);
-	int fileTypeInt = inputChoice(fileTypeString.size());
+	//std::vector<std::string> fileTypeString = {
+	//"Создать файл для записи данных вида: <название издания> <вид издания> <издающая организация> <год выпуска>",
+	//"Создать файл для записи данных вида: <название издания> <адрес редакции> <фамилия главного редактора>"
+	//};
+
+	ask(fileTypeString, sizeof(fileTypeString) / sizeof(fileTypeString[0]));
+	int fileTypeInt = inputChoice(sizeof(fileTypeString) / sizeof(fileTypeString[0]));
 
 	std::cout << "Выберите папку, где будете хранить файл" << std::endl;
 	std::string folder = findFolder();
@@ -203,14 +223,14 @@ std::string findFolder()
 			switch (choice)
 			{
 			case 1: agree = true; break; //save current folder
-			case 2: folder = folder.substr(0, folder.rfind("\\") + 1); break; //return from last folder
+			case 2: folder = folder.substr(0, folder.rfind("\\")); break; //return from last folder
 			default: folder = folder + "\\" + folderList[choice - 1]; break;
 			}
 		}
 		catch (const std::exception& ex)
 		{
 			std::cout << "Вы не можете выбрать этот файл или папку!" << std::endl;
-			folder = folder.substr(0, folder.rfind("\\") + 1);
+			folder = folder.substr(0, folder.rfind("\\"));
 		}
 	}
 	return folder;

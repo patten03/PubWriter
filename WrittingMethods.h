@@ -13,6 +13,7 @@
 void standartSettings();
 
 void ask(const std::vector<std::string> choice);
+void ask(const std::string* choice, const int& size);
 bool isNumber(const std::string& s);
 int inputChoice(const int& end);
 
