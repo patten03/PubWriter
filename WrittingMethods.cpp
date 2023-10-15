@@ -208,15 +208,16 @@ std::string findFolder()
 
 			folderList.push_back("Назад");
 
-			for (auto const& dirFolder : std::filesystem::directory_iterator(folder + "\\"))
+			for (auto const& dirFolder : std::filesystem::directory_iterator(folder + "\\")) //maybe "\"
 			{
+				//"../../ghj.txt"
 				std::string path = dirFolder.path().string();
 				path = path.substr(path.rfind("\\") + 1, path.size());
 
 				folderList.push_back(path);
 				//folderList.push_back(dirFolder.path().string().substr();
 			}
-
+	
 			ask(folderList);
 			int choice = inputChoice(folderList.size());
 
