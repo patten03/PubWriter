@@ -22,14 +22,6 @@ void ask(const std::vector<std::string> choice)
 	}
 }
 
-void ask(const std::string* choice, const int& size)
-{
-	for (int i(0); i < size; i++)
-	{
-		std::cout << i + 1 << ". " << choice[i] << std::endl;
-	}
-}
-
 int inputChoice(const int& end)
 {
 	bool incorrectInput = true;
@@ -62,6 +54,12 @@ int inputChoice(const int& end)
 	return choiceInt;
 }
 
+std::string space2underscore(std::string text)
+{
+	std::replace(text.begin(), text.end(), ' ', '_');
+	return text;
+}
+
 void menu()
 {
 	std::cout << "Добро пожаловать в программу PublisherWriter" << std::endl;
@@ -72,21 +70,14 @@ void menu()
 	{
 		std::cout << "Выберите задачу, которую хотите выполнить:" << std::endl;
 
-		//std::vector<std::string> menuQuestions{
-		//	"Создать файл",
-		//	"Редактировать файл",
-		//	"Выйти из программы"
-		//};
-
-		std::string menuQuestions[]{
+		std::vector<std::string> menuQuestions{
 			"Создать файл",
 			"Редактировать файл",
 			"Выйти из программы"
 		};
 
-
-		ask(menuQuestions, sizeof(menuQuestions) / sizeof(menuQuestions[0]));
-		int choice = inputChoice(sizeof(menuQuestions));
+		ask(menuQuestions);
+		int choice = inputChoice(menuQuestions.size());
 
 		switch (choice)
 		{
@@ -97,22 +88,75 @@ void menu()
 	}
 }
 
+std::string writeBook()
+{
+	Book book;
+
+	std::cout << "Введите название издания" << std::endl;
+	std::cout << ">>";
+	std::getline(std::cin, book.name);
+
+	std::cout << "Введите вид издания" << std::endl;
+	std::cout << ">>";
+	std::getline(std::cin, book.kind);
+
+	std::cout << "Введите издающую организацию" << std::endl;
+	std::cout << ">>";
+	std::getline(std::cin, book.oranization);
+
+	std::string year;
+	while (year == "")
+	{
+		try
+		{
+			std::cout << "Введите год выпуска XXXX" << std::endl;
+			std::cout << ">>";
+			std::getline(std::cin, year);
+
+			if (!isNumber(year)) throw std::invalid_argument("Год выпуска не соответствует XXXX");
+
+			book.year = stoi(year);
+		}
+		catch (std::exception& ex)
+		{
+			std::cout << ex.what() << std::endl;
+			year = "";
+		}
+	}
+
+	return (book.name + "; " + book.kind + "; " + book.oranization + "; " + std::to_string(book.year));
+}
+
+std::string writePublisher()
+{
+	Publisher publisher;
+
+	std::cout << "Введите название издания" << std::endl;
+	std::cout << ">>";
+	std::getline(std::cin, publisher.name);
+
+	std::cout << "Введите адрес редакции" << std::endl;
+	std::cout << ">>";
+	std::getline(std::cin, publisher.addres);
+
+	std::cout << "Введите фамилию главного редактора" << std::endl;
+	std::cout << ">>";
+	std::getline(std::cin, publisher.surname);
+
+	return (publisher.name + "; " + publisher.addres + "; " + publisher.surname);
+}
+
 void newFile()
 {
 	std::cout << "Выберите тип файла" << std::endl;
 
-	std::string fileTypeString[]{
-		"Создать файл для записи данных вида: <название издания> <вид издания> <издающая организация> <год выпуска>",
-		"Создать файл для записи данных вида: <название издания> <адрес редакции> <фамилия главного редактора>"
+	std::vector<std::string> fileTypeString = {
+	"Создать файл для записи данных вида: <название издания> <вид издания> <издающая организация> <год выпуска XXXX>",
+	"Создать файл для записи данных вида: <название издания> <адрес редакции> <фамилия главного редактора>"
 	};
 
-	//std::vector<std::string> fileTypeString = {
-	//"Создать файл для записи данных вида: <название издания> <вид издания> <издающая организация> <год выпуска>",
-	//"Создать файл для записи данных вида: <название издания> <адрес редакции> <фамилия главного редактора>"
-	//};
-
-	ask(fileTypeString, sizeof(fileTypeString) / sizeof(fileTypeString[0]));
-	int fileTypeInt = inputChoice(sizeof(fileTypeString) / sizeof(fileTypeString[0]));
+	ask(fileTypeString);
+	int fileTypeInt = inputChoice(fileTypeString.size());
 
 	std::cout << "Выберите папку, где будете хранить файл" << std::endl;
 	std::string folder = findFolder();
@@ -122,27 +166,54 @@ void newFile()
 	std::getline(std::cin, filename);
 	system("cls");
 
-	filename = filename + " " + currentTime();
+	filename = space2underscore(filename);
+	filename = filename + "_" + currentTime();
+	std::string fullPath = folder + "/" + filename + ".txt";
 
-	std::string fullPath = folder + "\\" + filename + ".txt";
-	std::fstream fout;
-	fout.open(fullPath,std::ios::out);
-
-	//fout << "Hello world!" << std::endl;
-
-	//std::cout << fout.is_open() << std::endl; // сделать проверку на открытие файла и задать отдельной функцией создание файла
-
-	writeData(fout, fileTypeInt);
-
-
-	fout.close();
+	createFile(fullPath, fileType(fileTypeInt));
 }
 
-void writeData(std::fstream &stream, int fileType)
+void createFile(const std::string& file, fileType choice)
 {
-	enum fileTypes {book = 1, publisher = 2};
+	std::fstream fout;
 
-	switch (fileType)
+	try
+	{
+		fout.open(file, std::ios_base::out);
+
+		if (!fout.is_open()) throw std::invalid_argument("Не удалось создать файл!");
+
+		std::string end("");
+
+		while (end != "0")
+		{
+			switch (choice)
+			{
+			case book:
+				fout << writeBook() << std::endl; break;
+			case publisher:
+				fout << writePublisher() << std::endl; break;
+			}
+
+			std::cout << "Для продолжения нажмите Enter, для выхода введите 0" << std::endl;
+			std::cout << ">>";
+			std::getline(std::cin, end);
+
+			system("cls");
+		}
+
+		fout.close();
+	}
+
+	catch (std::exception& ex)
+	{
+		std::cout << ex.what() << std::endl;
+	}
+}
+
+void writeData(std::fstream &stream, fileType choice)
+{
+	switch (choice)
 	{
 	case book:
 	{
@@ -171,8 +242,8 @@ std::string currentTime()
 	std::tm now{};
 	localtime_s(&now, &t);
 
-	std::string date = std::to_string(now.tm_mday) + "."
-		+ std::to_string(now.tm_mon + 1) + "."
+	std::string date = std::to_string(now.tm_mday) + "_"
+		+ std::to_string(now.tm_mon + 1) + "_"
 		+ std::to_string(now.tm_year + 1900);
 
 
@@ -180,16 +251,16 @@ std::string currentTime()
 
 	if (now.tm_min < 10)
 	{
-		clockTime = std::to_string(now.tm_hour) + "."
+		clockTime = std::to_string(now.tm_hour) + "_"
 			+ "0" + std::to_string(now.tm_min);
 	}
 	else
 	{
-		clockTime = std::to_string(now.tm_hour) + "."
+		clockTime = std::to_string(now.tm_hour) + "_"
 			+ std::to_string(now.tm_min);
 	}
 
-	res = clockTime + " " + date;
+	res = clockTime + "_" + date;
 	return res;
 }
 
@@ -208,11 +279,11 @@ std::string findFolder()
 
 			folderList.push_back("Назад");
 
-			for (auto const& dirFolder : std::filesystem::directory_iterator(folder + "\\")) //maybe "\"
+			for (auto const& dirFolder : std::filesystem::directory_iterator(folder + "/")) //maybe "\"
 			{
 				//"../../ghj.txt"
 				std::string path = dirFolder.path().string();
-				path = path.substr(path.rfind("\\") + 1, path.size());
+				path = path.substr(path.rfind("/") + 1, path.size());
 
 				folderList.push_back(path);
 				//folderList.push_back(dirFolder.path().string().substr();
@@ -224,14 +295,14 @@ std::string findFolder()
 			switch (choice)
 			{
 			case 1: agree = true; break; //save current folder
-			case 2: folder = folder.substr(0, folder.rfind("\\")); break; //return from last folder
-			default: folder = folder + "\\" + folderList[choice - 1]; break;
+			case 2: folder = folder.substr(0, folder.rfind("/")); break; //return from last folder
+			default: folder = folder + "/" + folderList[choice - 1]; break;
 			}
 		}
 		catch (const std::exception& ex)
 		{
 			std::cout << "Вы не можете выбрать этот файл или папку!" << std::endl;
-			folder = folder.substr(0, folder.rfind("\\"));
+			folder = folder.substr(0, folder.rfind("/"));
 		}
 	}
 	return folder;

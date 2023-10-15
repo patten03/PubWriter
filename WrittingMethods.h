@@ -9,23 +9,43 @@
 #include <vector>
 #include <filesystem>
 #include <ctime>
+#include <algorithm>
+
+enum fileType { book = 1, publisher = 2 };
+
+struct Book
+{
+	std::string name;
+	std::string kind;
+	std::string oranization;
+	unsigned int year;
+};
+
+struct Publisher
+{
+	std::string name;
+	std::string addres;
+	std::string surname;
+};
 
 void standartSettings();
 
 void ask(const std::vector<std::string> choice);
-void ask(const std::string* choice, const int& size);
 bool isNumber(const std::string& s);
 int inputChoice(const int& end);
 
 void menu();
 
+std::string writeBook();
+std::string writePublisher();
+
 void newFile();
+std::string currentTime();
+std::string findFolder();
+std::string space2underscore(std::string text);
+void createFile(const std::string& file, fileType choice);
 
 void writeData(std::fstream& stream, int fileType);
-
-std::string currentTime();
-
-std::string findFolder();
 
 void editFile();
 std::string findFile();
