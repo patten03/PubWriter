@@ -17,7 +17,7 @@ struct Book
 {
 	std::string name;
 	std::string kind;
-	std::string oranization;
+	std::string organization;
 	unsigned int year;
 };
 
@@ -33,6 +33,7 @@ void standartSettings();
 void ask(const std::vector<std::string> choice);
 bool isNumber(const std::string& s);
 int inputChoice(const int& end);
+void checkSpecialSymbol(std::string word);
 
 void menu();
 

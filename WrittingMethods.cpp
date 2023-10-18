@@ -60,6 +60,11 @@ std::string space2underscore(std::string text)
 	return text;
 }
 
+void checkSpecialSymbol(std::string word)
+{
+	if (word.find(";") != -1) throw std::invalid_argument("—лово содержало <;>!");
+}
+
 void menu()
 {
 	std::cout << "ƒобро пожаловать в программу PublisherWriter" << std::endl;
@@ -92,18 +97,34 @@ std::string writeBook()
 {
 	Book book;
 
-	std::cout << "¬ведите название издани€" << std::endl;
-	std::cout << ">>";
-	std::getline(std::cin, book.name);
+	bool approved(false);
+	while (approved != true)
+	{
+		std::cout << "—лова не должны содержать в себе специальный символ <;>" << std::endl;
+		try
+		{
+			std::cout << "¬ведите название издани€" << std::endl;
+			std::cout << ">>";
+			std::getline(std::cin, book.name);
+			checkSpecialSymbol(book.name);
 
-	std::cout << "¬ведите вид издани€" << std::endl;
-	std::cout << ">>";
-	std::getline(std::cin, book.kind);
+			std::cout << "¬ведите вид издани€" << std::endl;
+			std::cout << ">>";
+			std::getline(std::cin, book.kind);
+			checkSpecialSymbol(book.kind);
 
-	std::cout << "¬ведите издающую организацию" << std::endl;
-	std::cout << ">>";
-	std::getline(std::cin, book.oranization);
-
+			std::cout << "¬ведите издающую организацию" << std::endl;
+			std::cout << ">>";
+			std::getline(std::cin, book.organization);
+			checkSpecialSymbol(book.organization);
+			approved = true;
+		}
+		catch (std::exception& ex)
+		{
+			system("cls");
+			std::cout << ex.what() << std::endl;
+		}
+	}
 	std::string year;
 	while (year == "")
 	{
@@ -124,24 +145,41 @@ std::string writeBook()
 		}
 	}
 
-	return (book.name + "; " + book.kind + "; " + book.oranization + "; " + std::to_string(book.year));
+	return (book.name + "; " + book.kind + "; " + book.organization + "; " + std::to_string(book.year));
 }
 
 std::string writePublisher()
 {
 	Publisher publisher;
 
-	std::cout << "¬ведите название издани€" << std::endl;
-	std::cout << ">>";
-	std::getline(std::cin, publisher.name);
+	bool approved(false);
+	while (approved != true)
+	{
+		try
+		{
+			std::cout << "¬ведите название издани€" << std::endl;
+			std::cout << ">>";
+			std::getline(std::cin, publisher.name);
+			checkSpecialSymbol(publisher.name);
 
-	std::cout << "¬ведите адрес редакции" << std::endl;
-	std::cout << ">>";
-	std::getline(std::cin, publisher.addres);
+			std::cout << "¬ведите адрес редакции" << std::endl;
+			std::cout << ">>";
+			std::getline(std::cin, publisher.addres);
+			checkSpecialSymbol(publisher.addres);
 
-	std::cout << "¬ведите фамилию главного редактора" << std::endl;
-	std::cout << ">>";
-	std::getline(std::cin, publisher.surname);
+			std::cout << "¬ведите фамилию главного редактора" << std::endl;
+			std::cout << ">>";
+			std::getline(std::cin, publisher.surname);
+			checkSpecialSymbol(publisher.surname);
+
+			approved = true;
+		}
+		catch(std::exception& ex)
+		{
+			system("cls");
+			std::cout << ex.what() << std::endl;
+		}
+	}
 
 	return (publisher.name + "; " + publisher.addres + "; " + publisher.surname);
 }
