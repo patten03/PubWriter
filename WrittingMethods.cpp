@@ -97,34 +97,10 @@ std::string writeBook()
 {
 	Book book;
 
-	bool approved(false);
-	while (approved != true)
-	{
-		std::cout << "Слова не должны содержать в себе специальный символ <;>" << std::endl;
-		try
-		{
-			std::cout << "Введите название издания" << std::endl;
-			std::cout << ">>";
-			std::getline(std::cin, book.name);
-			checkSpecialSymbol(book.name);
+	inputString(book.name, "Введите название издания");
+	inputString(book.kind, "Введите вид издания");
+	inputString(book.organization, "Введите издающую организацию");
 
-			std::cout << "Введите вид издания" << std::endl;
-			std::cout << ">>";
-			std::getline(std::cin, book.kind);
-			checkSpecialSymbol(book.kind);
-
-			std::cout << "Введите издающую организацию" << std::endl;
-			std::cout << ">>";
-			std::getline(std::cin, book.organization);
-			checkSpecialSymbol(book.organization);
-			approved = true;
-		}
-		catch (std::exception& ex)
-		{
-			system("cls");
-			std::cout << ex.what() << std::endl;
-		}
-	}
 	std::string year;
 	while (year == "")
 	{
@@ -152,50 +128,37 @@ std::string writePublisher()
 {
 	Publisher publisher;
 
+	inputString(publisher.name, "Введите название издания");
+	inputString(publisher.addres, "Введите адрес редакции");
+	inputString(publisher.surname, "Введите фамилию главного редактора");
+
+	return (publisher.name + "; " + publisher.addres + "; " + publisher.surname);
+}
+
+void inputString(std::string& value, const std::string& question)
+{
 	bool approved(false);
 	while (approved != true)
 	{
 		try
 		{
-			std::cout << "Введите название издания" << std::endl;
+			std::cout << question << std::endl;
 			std::cout << ">>";
-			std::getline(std::cin, publisher.name);
-			checkSpecialSymbol(publisher.name);
-
-			std::cout << "Введите адрес редакции" << std::endl;
-			std::cout << ">>";
-			std::getline(std::cin, publisher.addres);
-			checkSpecialSymbol(publisher.addres);
-
-			std::cout << "Введите фамилию главного редактора" << std::endl;
-			std::cout << ">>";
-			std::getline(std::cin, publisher.surname);
-			checkSpecialSymbol(publisher.surname);
+			std::getline(std::cin, value);
+			checkSpecialSymbol(value);
+			if (value == "") throw std::invalid_argument("Пустое поле ввода!");
 
 			approved = true;
 		}
-		catch(std::exception& ex)
+		catch (std::exception& ex)
 		{
-			system("cls");
 			std::cout << ex.what() << std::endl;
 		}
 	}
-
-	return (publisher.name + "; " + publisher.addres + "; " + publisher.surname);
 }
 
 void newFile()
 {
-	std::cout << "Выберите тип файла" << std::endl;
-
-	std::vector<std::string> fileTypeString = {
-	"Создать файл для записи данных вида: <название издания> <вид издания> <издающая организация> <год выпуска XXXX>",
-	"Создать файл для записи данных вида: <название издания> <адрес редакции> <фамилия главного редактора>"
-	};
-
-	ask(fileTypeString);
-	int fileTypeInt = inputChoice(fileTypeString.size());
-
 	std::cout << "Выберите папку, где будете хранить файл" << std::endl;
 	std::string folder = findFolder();
 
@@ -208,6 +171,16 @@ void newFile()
 	filename = filename + "_" + currentTime();
 	std::string fullPath = folder + "/" + filename + ".txt";
 
+	std::cout << "Выберите тип файла" << std::endl;
+
+	std::vector<std::string> fileTypeString = {
+	"Создать файл для записи данных вида: <название издания> <вид издания> <издающая организация> <год выпуска XXXX>",
+	"Создать файл для записи данных вида: <название издания> <адрес редакции> <фамилия главного редактора>"
+	};
+
+	ask(fileTypeString);
+	int fileTypeInt = inputChoice(fileTypeString.size());
+
 	createFile(fullPath, fileType(fileTypeInt));
 }
 
@@ -219,7 +192,7 @@ void createFile(const std::string& file, fileType choice)
 	{
 		fout.open(file, std::ios_base::out);
 
-		if (!fout.is_open()) throw std::invalid_argument("Не удалось создать файл!");
+		if (!fout.is_open()) throw std::invalid_argument("Не удалось создать файл!\nПопробуйте выбрать другую папку или не использовать специальные символы.");
 
 		std::string end("");
 

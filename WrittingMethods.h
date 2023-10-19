@@ -45,6 +45,7 @@ std::string currentTime();
 std::string findFolder();
 std::string space2underscore(std::string text);
 void createFile(const std::string& file, fileType choice);
+void inputString(std::string& value, const std::string& question);
 
 void writeData(std::fstream& stream, int fileType);
 
