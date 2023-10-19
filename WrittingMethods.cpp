@@ -322,10 +322,49 @@ std::string findFolder()
 
 void editFile()
 {
+	std::cout << "Выберите файл, который будете редактировать" << std::endl;
+	std::string file = findFile();
 	return;
 }
 
 std::string findFile()
 {
-	return 0;
+	//std::string folder = "C:";
+	std::string filepath = ".";
+
+	while (filepath.find(".txt") == -1)
+	{
+		try
+		{
+			std::vector<std::string> folderList;
+			folderList.push_back("Назад");
+
+			for (auto const& dirFolder : std::filesystem::directory_iterator(filepath + "/")) //maybe "\"
+			{
+				//"../../ghj.txt"
+				std::string path = dirFolder.path().string();
+				path = path.substr(path.rfind("/") + 1, path.size());
+
+				folderList.push_back(path);
+				//folderList.push_back(dirFolder.path().string().substr();
+			}
+
+			std::cout << "Текущая папка - (" + filepath + ")" << std::endl;
+			ask(folderList);
+			int choice = inputChoice(folderList.size());
+
+			switch (choice)
+			{
+			case 1: filepath = filepath.substr(0, filepath.rfind("/")); break; //return from last folder
+			default: filepath = filepath + "/" + folderList[choice - 1]; break;
+			}
+		}
+		catch (const std::exception& ex)
+		{
+			std::cout << "Вы не можете выбрать этот файл или папку!" << std::endl;
+			filepath = filepath.substr(0, filepath.rfind("/"));
+		}
+	}
+
+	return filepath;
 }
