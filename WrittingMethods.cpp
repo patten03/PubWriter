@@ -278,7 +278,8 @@ std::string currentTime()
 std::string findFolder()
 {
 	bool agree = false;
-	std::string folder = "C:";
+	//std::string folder = "C:";
+	std::string folder = ".";
 
 	while (agree != true)
 	{
