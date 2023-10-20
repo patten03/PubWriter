@@ -34,20 +34,23 @@ void ask(const std::vector<std::string> choice);
 bool isNumber(const std::string& s);
 int inputChoice(const int& end);
 void checkSpecialSymbol(std::string word);
+std::string space2underscore(std::string text);
+std::string currentTime();
+int countSymbol(const std::string& s, const char& sym);
 
-void menu();
-
+void inputString(std::string& value, const std::string& question);
 std::string writeBook();
 std::string writePublisher();
 
+void menu();
+
 void newFile();
-std::string currentTime();
 std::string findFolder();
-std::string space2underscore(std::string text);
 void createFile(const std::string& file, fileType choice);
-void inputString(std::string& value, const std::string& question);
+
 
 void editFile();
 std::string findFile();
+void continueWriting(const std::string& file);
 
 #endif //WRITTINGMETHODS

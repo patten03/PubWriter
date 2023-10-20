@@ -65,6 +65,16 @@ void checkSpecialSymbol(std::string word)
 	if (word.find(";") != -1) throw std::invalid_argument("Слово содержало <;>!");
 }
 
+int countSymbol(const std::string& s, const char& sym)
+{
+	int count = 0;
+
+	for (int i = 0; i < s.size(); i++)
+		if (s[i] == sym) count++;
+
+	return count;
+}
+
 void menu()
 {
 	std::cout << "Добро пожаловать в программу PublisherWriter" << std::endl;
@@ -324,7 +334,21 @@ void editFile()
 {
 	std::cout << "Выберите файл, который будете редактировать" << std::endl;
 	std::string file = findFile();
-	return;
+	
+	std::vector<std::string> editFileMenu{
+		"Продолжить запись",
+		"Назад"
+	};
+
+	ask(editFileMenu);
+	int answer = inputChoice(editFileMenu.size());
+
+	switch (answer)
+	{
+	case 1: continueWriting(file); break;
+	case 2: break;
+	}
+	
 }
 
 std::string findFile()
@@ -367,4 +391,55 @@ std::string findFile()
 	}
 
 	return filepath;
+}
+
+void continueWriting(const std::string& file)
+{
+	std::fstream stream;
+
+	try
+	{
+		stream.open(file, std::ios_base::in | std::ios_base::out | std::ios_base::app);
+
+		if (!stream.is_open()) throw std::invalid_argument("Не удалось создать файл!\nПопробуйте выбрать другую папку или не использовать специальные символы.");
+		
+		int a = stream.tellg();
+		stream.seekg(std::ios::beg);
+		a = stream.tellg();
+
+		std::string str;
+		std::getline(stream, str);
+		fileType choice;
+		if (countSymbol(str, ';') == 3) choice = book;
+		else choice = publisher;
+
+		stream.seekg(0, std::ios::end);
+		a = stream.tellg();
+
+		std::string end("");
+
+		while (end != "0")
+		{
+			switch (choice)
+			{
+			case book:
+				stream << writeBook() << std::endl; break;
+			case publisher:
+				stream << writePublisher() << std::endl; break;
+			}
+
+			std::cout << "Для продолжения нажмите Enter, для выхода введите 0" << std::endl;
+			std::cout << ">>";
+			std::getline(std::cin, end);
+
+			system("cls");
+		}
+
+		stream.close();
+	}
+
+	catch (std::exception& ex)
+	{
+		std::cout << ex.what() << std::endl;
+	}
 }
