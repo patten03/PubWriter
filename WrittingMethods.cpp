@@ -60,9 +60,18 @@ std::string space2underscore(std::string text)
 	return text;
 }
 
-void checkSpecialSymbol(std::string word)
+void checkSemicolon(const std::string& word)
 {
 	if (word.find(";") != -1) throw std::invalid_argument("—лово содержало <;>!");
+}
+
+void chechSpecialSymbols(const std::string& word)
+{
+	std::string forbiddenSymbols("0123456789!@#&()Ц[{}]:;',?/*`~$^+=<>\\");
+	for (int i(0); i < forbiddenSymbols.size(); i++)
+	{
+		if (word.find(forbiddenSymbols[i]) != -1) throw std::invalid_argument("‘амили€ не может содержать специальные символы!");
+	}
 }
 
 int countSymbol(const std::string& s, const char& sym)
@@ -140,7 +149,25 @@ std::string writePublisher()
 
 	inputString(publisher.name, "¬ведите название издани€");
 	inputString(publisher.addres, "¬ведите адрес редакции");
-	inputString(publisher.surname, "¬ведите фамилию главного редактора");
+
+	publisher.surname = "";
+	while (publisher.surname == "")
+	{
+		try
+		{
+			std::cout << "¬ведите фамилию главного редактора" << std::endl;
+			std::cout << ">>";
+			std::getline(std::cin, publisher.surname);
+
+			chechSpecialSymbols(publisher.surname);
+		}
+		catch (std::exception& ex)
+		{
+			std::cout << ex.what() << std::endl;
+			publisher.surname = "";
+		}
+	}
+	//inputString(publisher.surname, "¬ведите фамилию главного редактора");
 
 	return (publisher.name + "; " + publisher.addres + "; " + publisher.surname);
 }
@@ -155,7 +182,7 @@ void inputString(std::string& value, const std::string& question)
 			std::cout << question << std::endl;
 			std::cout << ">>";
 			std::getline(std::cin, value);
-			checkSpecialSymbol(value);
+			checkSemicolon(value);
 			if (value == "") throw std::invalid_argument("ѕустое поле ввода!");
 
 			approved = true;

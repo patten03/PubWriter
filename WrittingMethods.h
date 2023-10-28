@@ -33,7 +33,7 @@ void standartSettings();
 void ask(const std::vector<std::string> choice);
 bool isNumber(const std::string& s);
 int inputChoice(const int& end);
-void checkSpecialSymbol(std::string word);
+void checkSemicolon(const std::string& word);
 std::string space2underscore(std::string text);
 std::string currentTime();
 int countSymbol(const std::string& s, const char& sym);
