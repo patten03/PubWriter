@@ -67,7 +67,7 @@ void checkSemicolon(const std::string& word)
 
 void chechSpecialSymbols(const std::string& word)
 {
-	std::string forbiddenSymbols("0123456789!@#&()Ц[{}]:;',?/*`~$^+=<>\\");
+	std::string forbiddenSymbols("0123456789!@#&()Ц[{}]:;',?/*`~$^+=<>\\є\"");
 	for (int i(0); i < forbiddenSymbols.size(); i++)
 	{
 		if (word.find(forbiddenSymbols[i]) != -1) throw std::invalid_argument("‘амили€ не может содержать специальные символы!");
@@ -221,6 +221,13 @@ void newFile()
 	createFile(fullPath, fileType(fileTypeInt));
 }
 
+
+/*
+* 
+* doxygen
+ @brief JJJ
+ @param fsfs
+*/
 void createFile(const std::string& file, fileType choice)
 {
 	std::fstream fout;
@@ -375,7 +382,6 @@ void editFile()
 	case 1: continueWriting(file); break;
 	case 2: break;
 	}
-	
 }
 
 std::string findFile()
