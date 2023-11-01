@@ -204,19 +204,25 @@ void newFile()
 	std::getline(std::cin, filename);
 	system("cls");
 
-	filename = space2underscore(filename);
-	filename = filename + "_" + currentTime();
-	std::string fullPath = folder + "/" + filename + ".txt";
-
 	std::cout << "Выберите тип файла" << std::endl;
 
 	std::vector<std::string> fileTypeString = {
-	"Создать файл для записи данных вида: <название издания> <вид издания> <издающая организация> <год выпуска XXXX>",
-	"Создать файл для записи данных вида: <название издания> <адрес редакции> <фамилия главного редактора>"
+	"Создать файл издания",
+	"Создать файл редакции"
 	};
 
 	ask(fileTypeString);
 	int fileTypeInt = inputChoice(fileTypeString.size());
+
+	filename = space2underscore(filename);
+	filename = filename + "_" + currentTime();
+	std::string fullPath;
+
+	switch (fileType(fileTypeInt))
+	{
+	case book: fullPath = folder + "/" + filename + "{b}" + ".txt";
+	case publisher: fullPath = folder + "/" + filename + "{p}" + ".txt";
+	}
 
 	createFile(fullPath, fileType(fileTypeInt));
 }
