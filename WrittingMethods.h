@@ -11,7 +11,7 @@
 #include <ctime>
 #include <algorithm>
 
-enum fileType { book = 1, publisher = 2 };
+enum fileType {none = 0, book = 1, publisher = 2};
 
 struct Book
 {
@@ -37,6 +37,8 @@ void checkSemicolon(const std::string& word);
 std::string space2underscore(std::string text);
 std::string currentTime();
 int countSymbol(const std::string& s, const char& sym);
+fileType defineFileType(const std::string& filename);
+
 
 void inputString(std::string& value, const std::string& question);
 std::string writeBook();

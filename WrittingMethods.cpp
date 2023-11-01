@@ -84,6 +84,15 @@ int countSymbol(const std::string& s, const char& sym)
 	return count;
 }
 
+fileType defineFileType(const std::string& filename)
+{
+	fileType result(none);
+	if (filename.find("{b}") != -1) result = book;
+	if (filename.find("{p}") != -1) result = publisher;
+
+	return result;
+}
+
 void menu()
 {
 	std::cout << "Добро пожаловать в программу PublisherWriter" << std::endl;
@@ -400,7 +409,11 @@ std::string findFile()
 
 			for (auto const& dirFolder : std::filesystem::directory_iterator(filepath + "/"))
 			{
-				if ((dirFolder.is_regular_file() and dirFolder.path().extension() == ".txt") or dirFolder.is_directory())
+				if ((dirFolder.is_regular_file()
+					and dirFolder.path().extension() == ".txt"
+					and defineFileType(dirFolder.path().string()) != none)
+
+					or dirFolder.is_directory())
 				{
 					std::string path = dirFolder.path().string();
 					path = path.substr(path.rfind("/") + 1, path.size());
