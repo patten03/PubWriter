@@ -400,14 +400,7 @@ std::string findFile()
 
 			for (auto const& dirFolder : std::filesystem::directory_iterator(filepath + "/"))
 			{
-				if (dirFolder.is_directory())
-				{
-					std::string path = dirFolder.path().string();
-					path = path.substr(path.rfind("/") + 1, path.size());
-
-					folderList.push_back(path);
-				}
-				if (dirFolder.is_regular_file() and dirFolder.path().extension() == ".txt")
+				if ((dirFolder.is_regular_file() and dirFolder.path().extension() == ".txt") or dirFolder.is_directory())
 				{
 					std::string path = dirFolder.path().string();
 					path = path.substr(path.rfind("/") + 1, path.size());
