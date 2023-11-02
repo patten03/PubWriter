@@ -338,7 +338,8 @@ std::string findFolder()
 {
 	bool agree = false;
 	//std::string folder = "C:";
-	std::string folder = ".";
+	std::filesystem::path p = ".";
+	std::string folder = std::filesystem::absolute(p).string();
 
 	while (agree != true)
 	{
@@ -350,13 +351,13 @@ std::string findFolder()
 
 			folderList.push_back("Назад");
 
-			for (auto const& dirFolder : std::filesystem::directory_iterator(folder + "/")) //maybe "\"
+			for (auto const& dirFolder : std::filesystem::directory_iterator(folder + "\\")) //maybe "\"
 			{
 				//"../../ghj.txt"
 				if (dirFolder.is_directory())
 				{
 					std::string path = dirFolder.path().string();
-					path = path.substr(path.rfind("/") + 1, path.size());
+					path = path.substr(path.rfind("\\") + 1, path.size());
 
 					folderList.push_back(path);
 				}
@@ -368,14 +369,14 @@ std::string findFolder()
 			switch (choice)
 			{
 			case 1: agree = true; break; //save current folder
-			case 2: folder = folder.substr(0, folder.rfind("/")); break; //return from last folder
-			default: folder = folder + "/" + folderList[choice - 1]; break;
+			case 2: folder = folder.substr(0, folder.rfind("\\")); break; //return from last folder
+			default: folder = folder + "\\" + folderList[choice - 1]; break;
 			}
 		}
 		catch (const std::exception& ex)
 		{
 			std::cout << "Вы не можете выбрать этот файл или папку!" << std::endl;
-			folder = folder.substr(0, folder.rfind("/"));
+			folder = folder.substr(0, folder.rfind("\\"));
 		}
 	}
 	return folder;
@@ -404,7 +405,8 @@ void editFile()
 std::string findFile()
 {
 	//std::string folder = "C:";
-	std::string filepath = ".";
+	std::filesystem::path p = ".";
+	std::string filepath = std::filesystem::absolute(p).string();
 
 	while (filepath.find(".txt") == -1)
 	{
@@ -413,7 +415,7 @@ std::string findFile()
 			std::vector<std::string> folderList;
 			folderList.push_back("Назад");
 
-			for (auto const& dirFolder : std::filesystem::directory_iterator(filepath + "/"))
+			for (auto const& dirFolder : std::filesystem::directory_iterator(filepath + "\\"))
 			{
 				if ((dirFolder.is_regular_file()
 					and dirFolder.path().extension() == ".txt"
@@ -422,7 +424,7 @@ std::string findFile()
 					or dirFolder.is_directory())
 				{
 					std::string path = dirFolder.path().string();
-					path = path.substr(path.rfind("/") + 1, path.size());
+					path = path.substr(path.rfind("\\") + 1, path.size());
 
 					folderList.push_back(path);
 				}
@@ -434,14 +436,14 @@ std::string findFile()
 
 			switch (choice)
 			{
-			case 1: filepath = filepath.substr(0, filepath.rfind("/")); break; //return from last folder
-			default: filepath = filepath + "/" + folderList[choice - 1]; break;
+			case 1: filepath = filepath.substr(0, filepath.rfind("\\")); break; //return from last folder
+			default: filepath = filepath + "\\" + folderList[choice - 1]; break;
 			}
 		}
 		catch (const std::exception& ex)
 		{
 			std::cout << "Вы не можете выбрать этот файл или папку!" << std::endl;
-			filepath = filepath.substr(0, filepath.rfind("/"));
+			filepath = filepath.substr(0, filepath.rfind("\\"));
 		}
 	}
 
