@@ -229,8 +229,8 @@ void newFile()
 
 	switch (fileType(fileTypeInt))
 	{
-	case book: fullPath = folder + "/" + filename + "{b}" + ".txt";
-	case publisher: fullPath = folder + "/" + filename + "{p}" + ".txt";
+	case book: fullPath = folder + "\\" + filename + "{b}" + ".txt";
+	case publisher: fullPath = folder + "\\" + filename + "{p}" + ".txt";
 	}
 
 	createFile(fullPath, fileType(fileTypeInt));
