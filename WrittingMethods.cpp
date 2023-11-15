@@ -117,6 +117,7 @@ void menu()
 		case 1: newFile(); break;
 		case 2: editFile(); break;
 		case 3: work = false; break;
+		default: throw std::invalid_argument("Некорректный формат ввода!");
 		}
 	}
 }
@@ -230,8 +231,9 @@ void newFile()
 
 	switch (fileType(fileTypeInt))
 	{
-	case book: fullPath = folder + "\\" + filename + "{b}" + ".txt";
-	case publisher: fullPath = folder + "\\" + filename + "{p}" + ".txt";
+	case book: fullPath = folder + "\\" + filename + "{b}" + ".txt"; break;
+	case publisher: fullPath = folder + "\\" + filename + "{p}" + ".txt"; break;
+	default: throw std::invalid_argument("Некорректный формат ввода!");
 	}
 
 	createFile(fullPath, fileType(fileTypeInt));
@@ -270,6 +272,7 @@ void createFile(const std::string& file, fileType choice)
 				fout << writeBook() << std::endl; break;
 			case publisher:
 				fout << writePublisher() << std::endl; break;
+			default: throw std::invalid_argument("Некорректный формат ввода!");
 			}
 
 			std::cout << "Для продолжения нажмите Enter, для выхода введите 0" << std::endl;
@@ -307,6 +310,7 @@ void writeData(std::fstream &stream, fileType choice)
 		}
 		break;
 	}
+	default: throw std::invalid_argument("Некорректный формат ввода!");
 	}
 
 }
@@ -414,6 +418,7 @@ void editFile()
 	{
 	case 1: continueWriting(file); break;
 	case 2: break;
+	default: throw std::invalid_argument("Некорректный формат ввода!");
 	}
 }
 
@@ -499,6 +504,7 @@ void continueWriting(const std::string& file)
 				stream << writeBook() << std::endl; break;
 			case publisher:
 				stream << writePublisher() << std::endl; break;
+			default: throw std::invalid_argument("Некорректный формат ввода!");
 			}
 
 			std::cout << "Для продолжения нажмите Enter, для выхода введите 0" << std::endl;
