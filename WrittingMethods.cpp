@@ -207,6 +207,7 @@ void newFile()
 {
 	std::cout << "Выберите папку, где будете хранить файл" << std::endl;
 	std::string folder = findFolder();
+	if (folder == "") return;
 
 	std::cout << "Введите название файла" << std::endl << ">>";
 	std::string filename;
@@ -355,7 +356,8 @@ std::string findFolder()
 			folderList.push_back("Выбрать текущую папку");
 			folderList[0] = folderList[0] + " (" + folder + ")";
 
-			folderList.push_back("Назад");
+			folderList.push_back("Выйти из папки");
+			folderList.push_back("Возврат в меню");
 
 			for (auto const& dirFolder : std::filesystem::directory_iterator(folder + "\\")) //maybe "\"
 			{
@@ -368,7 +370,7 @@ std::string findFolder()
 					folderList.push_back(path);
 				}
 			}
-	
+
 			ask(folderList);
 			int choice = inputChoice(folderList.size());
 
@@ -376,6 +378,12 @@ std::string findFolder()
 			{
 			case 1: agree = true; break; //save current folder
 			case 2: folder = folder.substr(0, folder.rfind("\\")); break; //return from last folder
+			case 3:
+			{
+				agree = true;
+				folder = "";
+				break;
+			}
 			default: folder = folder + "\\" + folderList[choice - 1]; break;
 			}
 		}
@@ -392,6 +400,7 @@ void editFile()
 {
 	std::cout << "Выберите файл, который будете редактировать" << std::endl;
 	std::string file = findFile();
+	if (file == "") return;
 	
 	std::vector<std::string> editFileMenu{
 		"Продолжить запись",
@@ -414,12 +423,13 @@ std::string findFile()
 	std::filesystem::path p = ".";
 	std::string filepath = std::filesystem::absolute(p).string();
 
-	while (filepath.find(".txt") == -1)
+	while (filepath.find(".txt") == -1 and filepath != "")
 	{
 		try
 		{
 			std::vector<std::string> folderList;
-			folderList.push_back("Назад");
+			folderList.push_back("Выйти из папки");
+			folderList.push_back("Возврат в меню");
 
 			for (auto const& dirFolder : std::filesystem::directory_iterator(filepath + "\\"))
 			{
@@ -443,6 +453,7 @@ std::string findFile()
 			switch (choice)
 			{
 			case 1: filepath = filepath.substr(0, filepath.rfind("\\")); break; //return from last folder
+			case 2: filepath = ""; break;
 			default: filepath = filepath + "\\" + folderList[choice - 1]; break;
 			}
 		}
@@ -452,7 +463,6 @@ std::string findFile()
 			filepath = filepath.substr(0, filepath.rfind("\\"));
 		}
 	}
-
 	return filepath;
 }
 
