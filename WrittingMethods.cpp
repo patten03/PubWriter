@@ -252,6 +252,12 @@ void createFile(const std::string& file, fileType choice)
 		fout.open(file, std::ios_base::out);
 
 		if (!fout.is_open()) throw std::invalid_argument("Не удалось создать файл!\nПопробуйте выбрать другую папку или не использовать специальные символы.");
+		else
+		{
+			int beg = file.rfind("\\") + 1;
+			int end = beg - file.length();
+			std::cout << "Был создан файл " << file.substr(beg, end) << std::endl << std::endl;
+		}
 
 		std::string end("");
 
