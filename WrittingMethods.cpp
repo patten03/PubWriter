@@ -227,30 +227,6 @@ void createFile(const std::string& file, fileType choice)
 	}
 }
 
-void writeData(std::fstream &stream, fileType choice)
-{
-	switch (choice)
-	{
-	case book:
-	{
-		break;
-	}
-	case publisher:
-	{
-		std::string buff("_");
-
-		while (buff != "")
-		{
-			std::cout << "Введите " << std::endl << ">>";
-			std::getline(std::cin, buff);
-		}
-		break;
-	}
-	default: throw std::invalid_argument("Некорректный формат ввода!");
-	}
-
-}
-
 void editFile()
 {
 	std::string file = findFile("Выберите файл, который будете редактировать");
