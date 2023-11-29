@@ -37,6 +37,7 @@ void ask(const std::vector<std::string> choice);
 bool isNumber(const std::string& s);
 int inputChoice(const int& end);
 void checkSemicolon(const std::string& word);
+void corrSurname(std::string& surname);
 
 void inputString(std::string& value, const std::string& question);
 std::string writeBook();

@@ -113,6 +113,7 @@ std::string writePublisher()
 			std::getline(std::cin, publisher.surname);
 
 			chechSpecialSymbols(publisher.surname);
+			corrSurname(publisher.surname);
 		}
 		catch (std::exception& ex)
 		{
@@ -308,4 +309,13 @@ int inputChoice(const int& end)
 	choiceInt = choiceInt - '0';
 	system("cls");
 	return choiceInt;
+}
+
+void corrSurname(std::string& surname)
+{
+	surname[0] = toupper(surname[0]);
+	for (int i(1); i < surname.size(); i++)
+	{
+		surname[i] = tolower(surname[i]);
+	}
 }
