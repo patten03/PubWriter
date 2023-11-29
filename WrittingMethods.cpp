@@ -220,10 +220,6 @@ void writingLoop(std::fstream& file, fileType type)
 		default: throw std::invalid_argument("Некорректный формат ввода!");
 		}
 
-		//std::cout << "Для продолжения нажмите Enter, для выхода введите 0" << std::endl;
-		//std::cout << ">>";
-		//std::getline(std::cin, end);
-
 		if (buff == "quit")
 			end = buff;
 		else
@@ -248,26 +244,6 @@ void createFile(const std::string& file, fileType choice)
 			int end = beg - file.length();
 			std::cout << "Был создан файл " << file.substr(beg, end) << std::endl << std::endl;
 		}
-
-		//std::string end("");
-
-		//while (end != "0")
-		//{
-		//	switch (choice)
-		//	{
-		//	case book:
-		//		fout << writeBook() << std::endl; break;
-		//	case publisher:
-		//		fout << writePublisher() << std::endl; break;
-		//	default: throw std::invalid_argument("Некорректный формат ввода!");
-		//	}
-
-		//	std::cout << "Для продолжения нажмите Enter, для выхода введите 0" << std::endl;
-		//	std::cout << ">>";
-		//	std::getline(std::cin, end);
-
-		//	system("cls");
-		//}
 
 		writingLoop(fout, choice);
 
@@ -299,26 +275,6 @@ void continueWriting(const std::string& file)
 		if (!stream.is_open()) throw std::invalid_argument("Не удалось создать файл!\nПопробуйте выбрать другую папку или не использовать специальные символы.");
 
 		fileType choice = defineFileType(file);
-
-		//std::string end("");
-
-		//while (end != "0")
-		//{
-		//	switch (choice)
-		//	{
-		//	case book:
-		//		stream << writeBook() << std::endl; break;
-		//	case publisher:
-		//		stream << writePublisher() << std::endl; break;
-		//	default: throw std::invalid_argument("Некорректный формат ввода!");
-		//	}
-
-		//	std::cout << "Для продолжения нажмите Enter, для выхода введите 0" << std::endl;
-		//	std::cout << ">>";
-		//	std::getline(std::cin, end);
-
-		//	system("cls");
-		//}
 
 		writingLoop(stream, choice);
 
