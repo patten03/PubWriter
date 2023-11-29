@@ -70,8 +70,14 @@ std::string writeBook()
 	Book book;
 
 	inputString(book.name, "Введите название издания");
+	if (book.name == "")
+		return "quit";
 	inputString(book.kind, "Введите вид издания");
+	if (book.kind == "")
+		return "quit";
 	inputString(book.organization, "Введите издающую организацию");
+	if (book.organization == "")
+		return "quit";
 
 	std::string year;
 	while (year == "")
@@ -82,7 +88,11 @@ std::string writeBook()
 			std::cout << ">>";
 			std::getline(std::cin, year);
 
-			if (!isNumber(year)) throw std::invalid_argument("Год выпуска не соответствует XXXX");
+			if (year == "0")
+				return "quit";
+
+			if (!isNumber(year))
+				throw std::invalid_argument("Год выпуска не соответствует XXXX");
 
 			book.year = stoi(year);
 		}
@@ -93,7 +103,10 @@ std::string writeBook()
 		}
 	}
 
-	return (book.name + "; " + book.kind + "; " + book.organization + "; " + std::to_string(book.year));
+	return (book.name + "; "
+		+ book.kind + "; "
+		+ book.organization + "; "
+		+ std::to_string(book.year));
 }
 
 std::string writePublisher()
@@ -101,7 +114,11 @@ std::string writePublisher()
 	Publisher publisher;
 
 	inputString(publisher.name, "Введите название издания");
-	inputString(publisher.addres, "Введите адрес редакции");
+	if (publisher.name == "")
+		return "quit";
+	inputString(publisher.address, "Введите адрес редакции");
+	if (publisher.address == "")
+		return "quit";
 
 	publisher.surname = "";
 	while (publisher.surname == "")
@@ -111,6 +128,8 @@ std::string writePublisher()
 			std::cout << "Введите фамилию главного редактора" << std::endl;
 			std::cout << ">>";
 			std::getline(std::cin, publisher.surname);
+			if (publisher.surname == "0")
+				return "quit";
 
 			chechSpecialSymbols(publisher.surname);
 			corrSurname(publisher.surname);
@@ -121,9 +140,10 @@ std::string writePublisher()
 			publisher.surname = "";
 		}
 	}
-	//inputString(publisher.surname, "Введите фамилию главного редактора");
 
-	return (publisher.name + "; " + publisher.addres + "; " + publisher.surname);
+	return (publisher.name + "; "
+		+ publisher.address + "; "
+		+ publisher.surname);
 }
 
 void inputString(std::string& value, const std::string& question)
@@ -138,6 +158,7 @@ void inputString(std::string& value, const std::string& question)
 			std::getline(std::cin, value);
 			checkSemicolon(value);
 			if (value == "") throw std::invalid_argument("Пустое поле ввода!");
+			if (value == "0") value = "";
 
 			approved = true;
 		}
@@ -182,6 +203,36 @@ void newFile()
 	createFile(fullPath, fileType(fileTypeInt));
 }
 
+void writingLoop(std::fstream& file, fileType type)
+{
+	std::string end("");
+
+	std::string buff;
+	while (end != "quit")
+	{
+		std::cout << "Для прекращения работы с файлом введите 0" << std::endl;
+		switch (type)
+		{
+		case book:
+			buff = writeBook(); break;
+		case publisher:
+			buff = writePublisher(); break;
+		default: throw std::invalid_argument("Некорректный формат ввода!");
+		}
+
+		//std::cout << "Для продолжения нажмите Enter, для выхода введите 0" << std::endl;
+		//std::cout << ">>";
+		//std::getline(std::cin, end);
+
+		if (buff == "quit")
+			end = buff;
+		else
+			file << buff << std::endl;
+
+		system("cls");
+	}
+}
+
 void createFile(const std::string& file, fileType choice)
 {
 	std::fstream fout;
@@ -198,25 +249,27 @@ void createFile(const std::string& file, fileType choice)
 			std::cout << "Был создан файл " << file.substr(beg, end) << std::endl << std::endl;
 		}
 
-		std::string end("");
+		//std::string end("");
 
-		while (end != "0")
-		{
-			switch (choice)
-			{
-			case book:
-				fout << writeBook() << std::endl; break;
-			case publisher:
-				fout << writePublisher() << std::endl; break;
-			default: throw std::invalid_argument("Некорректный формат ввода!");
-			}
+		//while (end != "0")
+		//{
+		//	switch (choice)
+		//	{
+		//	case book:
+		//		fout << writeBook() << std::endl; break;
+		//	case publisher:
+		//		fout << writePublisher() << std::endl; break;
+		//	default: throw std::invalid_argument("Некорректный формат ввода!");
+		//	}
 
-			std::cout << "Для продолжения нажмите Enter, для выхода введите 0" << std::endl;
-			std::cout << ">>";
-			std::getline(std::cin, end);
+		//	std::cout << "Для продолжения нажмите Enter, для выхода введите 0" << std::endl;
+		//	std::cout << ">>";
+		//	std::getline(std::cin, end);
 
-			system("cls");
-		}
+		//	system("cls");
+		//}
+
+		writingLoop(fout, choice);
 
 		fout.close();
 	}
@@ -247,25 +300,27 @@ void continueWriting(const std::string& file)
 
 		fileType choice = defineFileType(file);
 
-		std::string end("");
+		//std::string end("");
 
-		while (end != "0")
-		{
-			switch (choice)
-			{
-			case book:
-				stream << writeBook() << std::endl; break;
-			case publisher:
-				stream << writePublisher() << std::endl; break;
-			default: throw std::invalid_argument("Некорректный формат ввода!");
-			}
+		//while (end != "0")
+		//{
+		//	switch (choice)
+		//	{
+		//	case book:
+		//		stream << writeBook() << std::endl; break;
+		//	case publisher:
+		//		stream << writePublisher() << std::endl; break;
+		//	default: throw std::invalid_argument("Некорректный формат ввода!");
+		//	}
 
-			std::cout << "Для продолжения нажмите Enter, для выхода введите 0" << std::endl;
-			std::cout << ">>";
-			std::getline(std::cin, end);
+		//	std::cout << "Для продолжения нажмите Enter, для выхода введите 0" << std::endl;
+		//	std::cout << ">>";
+		//	std::getline(std::cin, end);
 
-			system("cls");
-		}
+		//	system("cls");
+		//}
+
+		writingLoop(stream, choice);
 
 		stream.close();
 	}

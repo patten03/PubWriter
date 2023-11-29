@@ -27,7 +27,7 @@ struct Book
 struct Publisher
 {
 	std::string name;
-	std::string addres;
+	std::string address;
 	std::string surname;
 };
 
