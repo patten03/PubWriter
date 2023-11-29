@@ -128,10 +128,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DirWork.cpp" />
     <ClCompile Include="PublisherWriter.cpp" />
     <ClCompile Include="WrittingMethods.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DirWork.h" />
     <ClInclude Include="WrittingMethods.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
