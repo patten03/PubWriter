@@ -210,7 +210,7 @@ void writingLoop(std::fstream& file, fileType type)
 	std::string buff;
 	while (end != "quit")
 	{
-		std::cout << "Для прекращения работы с файлом введите 0" << std::endl;
+		std::cout << "Для прекращения работы с файлом введите 0" << std::endl << std::endl;
 		switch (type)
 		{
 		case book:
