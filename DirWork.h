@@ -12,4 +12,9 @@ void folderChoice(int menuSize, std::vector<std::string> folders, int& cur, bool
 void fileChoice(int begCoord, std::vector<std::string> folders, int& cur, std::string& filepath);
 void makeDirNFilesList(std::string filepath, std::vector<std::string>& folderList);
 
+std::string findFile(std::string title);
+std::string findFolder(std::string title);
+
+bool dirAccess(const std::string& folder);
+
 #endif //DIRWORK

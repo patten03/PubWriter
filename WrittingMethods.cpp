@@ -27,12 +27,22 @@ void checkSemicolon(const std::string& word)
 	if (word.find(";") != -1) throw std::invalid_argument("Слово содержало <;>!");
 }
 
-void chechSpecialSymbols(const std::string& word)
+void checkNameSymbols(const std::string& word)
 {
 	std::string forbiddenSymbols("0123456789!@#&()–[{}]:;',?/*`~$^+=<>\\№\"");
 	for (int i(0); i < forbiddenSymbols.size(); i++)
 	{
 		if (word.find(forbiddenSymbols[i]) != -1) throw std::invalid_argument("Фамилия не может содержать специальные символы!");
+	}
+}
+
+void checkSpecialSymbols(const std::string& word)
+{
+	std::string forbiddenSymbols("\\/:*?<>\"|");
+	for (int i(0); i < forbiddenSymbols.size(); i++)
+	{
+		if (word.find(forbiddenSymbols[i]) != -1)
+			throw std::invalid_argument("Файл не может содержать \\/:*?<>\"|");
 	}
 }
 
@@ -131,7 +141,7 @@ std::string writePublisher()
 			if (publisher.surname == "0")
 				return "quit";
 
-			chechSpecialSymbols(publisher.surname);
+			checkNameSymbols(publisher.surname);
 			corrSurname(publisher.surname);
 		}
 		catch (std::exception& ex)
@@ -176,7 +186,20 @@ void newFile()
 
 	std::cout << "Введите название файла" << std::endl << ">>";
 	std::string filename;
-	std::getline(std::cin, filename);
+	bool approved(false);
+	while (!approved)
+	{
+		try
+		{
+			std::getline(std::cin, filename);
+			checkSpecialSymbols(filename);
+			approved = true;
+		}
+		catch (std::exception& ex)
+		{
+			std::cout << ex.what() << std::endl;
+		}
+	}
 	system("cls");
 
 	std::cout << "Выберите тип файла" << std::endl;
@@ -237,7 +260,8 @@ void createFile(const std::string& file, fileType choice)
 	{
 		fout.open(file, std::ios_base::out);
 
-		if (!fout.is_open()) throw std::invalid_argument("Не удалось создать файл!\nПопробуйте выбрать другую папку или не использовать специальные символы.");
+		if (!fout.is_open())
+			throw std::invalid_argument("Не удалось создать файл!\nПопробуйте выбрать другую папку или не использовать специальные символы.");
 		else
 		{
 			int beg = file.rfind("\\") + 1;

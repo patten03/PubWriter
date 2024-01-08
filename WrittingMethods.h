@@ -37,6 +37,8 @@ void ask(const std::vector<std::string> choice);
 bool isNumber(const std::string& s);
 int inputChoice(const int& end);
 void checkSemicolon(const std::string& word);
+void checkNameSymbols(const std::string& word);
+void checkSpecialSymbols(const std::string& word);
 void corrSurname(std::string& surname);
 
 void inputString(std::string& value, const std::string& question);
@@ -46,11 +48,9 @@ std::string writePublisher();
 void menu();
 
 void newFile();
-std::string findFolder(std::string title);
 void createFile(const std::string& file, fileType choice);
 
 void editFile();
-std::string findFile(std::string title);
 void continueWriting(const std::string& file);
 
 #endif //WRITTINGMETHODS
