@@ -24,7 +24,8 @@ void ask(const std::vector<std::string> choice)
 
 void checkSemicolon(const std::string& word)
 {
-	if (word.find(";") != -1) throw std::invalid_argument("Слово содержало <;>!");
+	if (word.find(";") != -1)
+		throw std::invalid_argument("Строка не может содержать <;>!");
 }
 
 void checkNameSymbols(const std::string& word)
@@ -32,7 +33,8 @@ void checkNameSymbols(const std::string& word)
 	std::string forbiddenSymbols("0123456789!@#&()–[{}]:;',?/*`~$^+=<>\\№\"");
 	for (int i(0); i < forbiddenSymbols.size(); i++)
 	{
-		if (word.find(forbiddenSymbols[i]) != -1) throw std::invalid_argument("Фамилия не может содержать специальные символы!");
+		if (word.find(forbiddenSymbols[i]) != -1)
+			throw std::invalid_argument("Фамилия не может содержать специальные символы!");
 	}
 }
 
@@ -70,7 +72,7 @@ void menu()
 		case 1: newFile(); break;
 		case 2: editFile(); break;
 		case 3: work = false; break;
-		default: throw std::invalid_argument("Некорректный формат ввода!");
+		default: break;
 		}
 	}
 }
@@ -220,7 +222,7 @@ void newFile()
 	{
 	case book: fullPath = folder + "\\" + filename + "{b}" + ".txt"; break;
 	case publisher: fullPath = folder + "\\" + filename + "{p}" + ".txt"; break;
-	default: throw std::invalid_argument("Некорректный формат ввода!");
+	default: break;
 	}
 
 	createFile(fullPath, fileType(fileTypeInt));
@@ -240,7 +242,7 @@ void writingLoop(std::fstream& file, fileType type)
 			buff = writeBook(); break;
 		case publisher:
 			buff = writePublisher(); break;
-		default: throw std::invalid_argument("Некорректный формат ввода!");
+		default: break;
 		}
 
 		if (buff == "quit")
@@ -261,7 +263,7 @@ void createFile(const std::string& file, fileType choice)
 		fout.open(file, std::ios_base::out);
 
 		if (!fout.is_open())
-			throw std::invalid_argument("Не удалось создать файл!\nПопробуйте выбрать другую папку или не использовать специальные символы.");
+			throw std::invalid_argument("Не удалось создать файл!");
 		else
 		{
 			int beg = file.rfind("\\") + 1;
@@ -296,7 +298,7 @@ void continueWriting(const std::string& file)
 	{
 		stream.open(file, std::ios_base::in | std::ios_base::out | std::ios_base::app);
 
-		if (!stream.is_open()) throw std::invalid_argument("Не удалось создать файл!\nПопробуйте выбрать другую папку или не использовать специальные символы.");
+		if (!stream.is_open()) throw std::invalid_argument("Не удалось создать файл!");
 
 		fileType choice = defineFileType(file);
 

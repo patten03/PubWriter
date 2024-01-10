@@ -1,7 +1,5 @@
 #include "DirWork.h"
 
-#include  <io.h>
-
 fileType defineFileType(const std::string& filename)
 {
 	fileType result(none);
@@ -111,7 +109,7 @@ std::string findFolder(std::string title)
 		}
 		catch (const std::exception& ex)
 		{
-			std::cout << "Вы не можете выбрать этот файл или папку!" << std::endl;
+			std::cout << ex.what() << std::endl;
 			curFolder = curFolder.substr(0, curFolder.rfind("\\"));
 		}
 	}
@@ -219,7 +217,7 @@ std::string findFile(std::string title)
 		}
 		catch (const std::exception& ex)
 		{
-			std::cout << "Вы не можете выбрать этот файл или папку!" << std::endl;
+			std::cout << ex.what() << std::endl;
 			curFilepath = curFilepath.substr(0, curFilepath.rfind("\\"));
 		}
 	}
