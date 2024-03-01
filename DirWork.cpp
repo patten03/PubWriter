@@ -61,7 +61,7 @@ bool dirAccess(const std::string& folder)
 
 	bool res = std::filesystem::exists(filepath);
 	if (res)
-		system(("del " + filepath).c_str());
+		system(("del \"" + filepath + "\"").c_str());
 	return res;
 }
 
