@@ -91,7 +91,7 @@ std::string findFile(std::string title)
 		catch (const std::exception& ex)
 		{
 			std::cout << ex.what() << std::endl;
-			curFilepath = curFilepath.substr(0, curFilepath.rfind("\\"));
+			return ""; //выход в меню по ошибке
 		}
 	}
 	return curFilepath;
