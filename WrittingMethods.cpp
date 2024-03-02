@@ -297,9 +297,12 @@ void continueWriting(const std::string& file)
 	{
 		stream.open(file, std::ios_base::in | std::ios_base::out | std::ios_base::app);
 
-		if (!stream.is_open()) throw std::invalid_argument("Не удалось создать файл!");
+		if (!stream.is_open())
+			throw std::invalid_argument("Не удалось создать файл!");
 
 		fileType choice = defineFileType(file);
+
+		std::cout << "Был выбран файл " << file << std::endl << std::endl;
 
 		writingLoop(stream, choice);
 
