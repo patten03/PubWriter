@@ -5,6 +5,7 @@
 
 std::string space2underscore(std::string text);
 std::string currentTime();
+std::string formatXX(int num);
 
 int movingArrow(int ymin, int ymax, int cur, int key);
 void fileChoice(int begCoord, std::vector<std::string> folders, int& cur, std::string& filepath);

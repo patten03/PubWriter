@@ -23,26 +23,26 @@ std::string currentTime()
 	std::tm now{};
 	localtime_s(&now, &t);
 
-	std::string date = std::to_string(now.tm_mday) + "_"
-		+ std::to_string(now.tm_mon + 1) + "_"
+	std::string date = formatXX(now.tm_mday) + "-"
+		+ formatXX(now.tm_mon + 1) + "-"
 		+ std::to_string(now.tm_year + 1900);
 
 
 	std::string clockTime;
 
-	if (now.tm_min < 10)
-	{
-		clockTime = std::to_string(now.tm_hour) + "_"
-			+ "0" + std::to_string(now.tm_min);
-	}
-	else
-	{
-		clockTime = std::to_string(now.tm_hour) + "_"
-			+ std::to_string(now.tm_min);
-	}
+	clockTime = formatXX(now.tm_hour) + "_"
+		+ formatXX(now.tm_min);
 
 	res = clockTime + "_" + date;
 	return res;
+}
+
+std::string formatXX(int num)
+{
+	if (num < 10)
+		return "0" + std::to_string(num);
+	else
+		return std::to_string(num);
 }
 
 void showDir(const std::vector<std::string>& dir)
