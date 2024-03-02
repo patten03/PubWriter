@@ -183,16 +183,15 @@ void inputString(std::string& value, const std::string& question)
 
 void newFile()
 {
-	std::string folder = findFolder("Выберите папку, где будете хранить файл");
-	if (folder == "") return;
-
-	std::cout << "Введите название файла" << std::endl << ">>";
+	std::cout << "Введите название файла" << std::endl;
 	std::string filename;
 	bool approved(false);
 	while (!approved)
 	{
 		try
 		{
+			
+			std::cout << ">>";
 			std::getline(std::cin, filename);
 			checkSpecialSymbols(filename);
 			approved = true;
@@ -220,8 +219,8 @@ void newFile()
 
 	switch (fileType(fileTypeInt))
 	{
-	case book: fullPath = folder + "\\" + filename + "{b}" + ".txt"; break;
-	case publisher: fullPath = folder + "\\" + filename + "{p}" + ".txt"; break;
+	case book: fullPath = filename + "{b}" + ".txt"; break;
+	case publisher: fullPath = filename + "{p}" + ".txt"; break;
 	default: break;
 	}
 

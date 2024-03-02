@@ -53,165 +53,38 @@ void showDir(const std::vector<std::string>& dir)
 	}
 }
 
-bool dirAccess(const std::string& folder)
-{
-	std::string filepath = folder + "\\check_permission.txt";
-	std::ofstream file(filepath);
-	file.close();
-
-	bool res = std::filesystem::exists(filepath);
-	if (res)
-		system(("del \"" + filepath + "\"").c_str());
-	return res;
-}
-
-std::string findFolder(std::string title)
-{
-	bool agree = false;
-	std::filesystem::path p = ".";
-	std::string begFolder = std::filesystem::absolute(p).string();
-	std::string curFolder = begFolder;
-
-	while (agree != true)
-	{
-		try
-		{
-			bool permission = dirAccess(curFolder);
-
-			std::vector<std::string> folderList;
-			std::cout << title << std::endl;
-			std::vector<std::string> menu{
-				"Выбрать текущую папку",
-				"Выйти из папки",
-				"Вернуться в изначальную папку",
-				"Возврат в меню"
-			};
-			if (!permission)
-				menu[0] = "Невозможно выбрать текущую папку";
-			menu[0] = menu[0] + " (" + curFolder + ")";
-
-			int begCoord = menu.size() + 1;
-			int cur(begCoord); // arrow coordinate for folders
-
-			makeDirList(curFolder, folderList);
-
-			ask(menu);
-			showDir(folderList);
-
-			folderChoice(begCoord, folderList, cur, agree, curFolder);
-			
-			if (curFolder == "returnStart")
-				curFolder = begFolder;
-			if (agree and !permission and curFolder != "")
-				agree = false;
-
-			system("cls");
-		}
-		catch (const std::exception& ex)
-		{
-			std::cout << ex.what() << std::endl;
-			curFolder = curFolder.substr(0, curFolder.rfind("\\"));
-		}
-	}
-	return curFolder;
-}
-
-void makeDirList(std::string folder, std::vector<std::string>& folderList)
-{
-	for (auto const& dirFolder : std::filesystem::directory_iterator(folder + "\\"))
-	{
-		if (dirFolder.is_directory())
-		{
-			std::string path = dirFolder.path().string();
-			path = path.substr(path.rfind("\\") + 1, path.size());
-
-			folderList.push_back(path);
-		}
-	}
-}
-
-void folderChoice(int menuSize, std::vector<std::string> folders, int& cur, bool& agree, std::string& folder)
-{
-	movingArrow(menuSize, menuSize + folders.size(), cur, 0); // just show the arrow
-
-	bool chosenMenu(false);
-	while (!chosenMenu)
-	{
-		switch (int c = _getch())
-		{
-		case 224: cur = movingArrow(menuSize, menuSize + folders.size() - 1, cur, _getch()); break;
-		case '1': //сохранение текущей папки
-		{
-			chosenMenu = true;
-			cur = menuSize;
-			agree = true; break; //save current folder
-		}
-		case '2': //возвращение из текущей папки
-		{
-			chosenMenu = true;
-			cur = menuSize;
-			folder = folder.substr(0, folder.rfind("\\")); break; //return from last folder
-		}
-		case '3': //возвращение в изначальную папку
-		{
-			chosenMenu = true;
-			cur = menuSize;
-			folder = "returnStart";
-			break;
-		}
-		case '4': //выход без выбора папки
-		{
-			chosenMenu = true;
-			cur = menuSize;
-			agree = true;
-			folder = "";
-			break;
-		}
-		case 13: //выбор папки
-		{
-			if (folders.size() == 0)
-				folder = folder.substr(0, folder.rfind("\\"));
-			else
-				folder = folder + "\\" + folders[cur - menuSize];
-			chosenMenu = true;
-			cur = menuSize;
-			break;
-		}
-		default: break;
-		}
-	}
-}
-
 std::string findFile(std::string title)
 {
 	std::filesystem::path p = ".";
-	std::string begFilepath = std::filesystem::absolute(p).string();
-	std::string curFilepath = begFilepath;
+	std::string curFilepath = std::filesystem::absolute(p).string();
 
 	while (curFilepath.find(".txt") == -1 and curFilepath != "")
 	{
 		try
 		{
-			std::vector<std::string> folderList;
-			makeDirNFilesList(curFilepath, folderList);
+			std::vector<std::string> fileList;
+			makeFilesList(curFilepath, fileList);
+			if (fileList.size() == 0)
+				throw std::invalid_argument("Директория пуста, ни одного файла не найдено");
 			std::cout << title << std::endl;
 
-			std::cout << "Текущая папка - (" + curFilepath + ")" << std::endl;
+			std::cout << curFilepath << std::endl;
+
 			std::vector<std::string> menu{
-				"Выйти из папки",
-				"Вернуться в изначальную папку",
-				"Возврат в меню"
+				"Для выбора файла используйте ENTER и стрелочки ВВЕРХ ВНИЗ",
+				"Для выхода из меню нажмите ESC"
 			};
 
 			int begCoord = menu.size() + 1 + 1;
-			int cur(begCoord); // arrow coordinate for folders
+			int cur(begCoord); //инициализация координаты стрелки выбора файла
 
-			ask(menu);
-			showDir(folderList);
+			for (const auto& line : menu)
+			{
+				std::cout << line << std::endl;
+			}
+			showDir(fileList);
 
-			fileChoice(begCoord, folderList, cur, curFilepath);
-			if (curFilepath == "returnStart")
-				curFilepath = begFilepath;
+			fileChoice(begCoord, fileList, cur, curFilepath);
 
 			system("cls");
 		}
@@ -224,44 +97,31 @@ std::string findFile(std::string title)
 	return curFilepath;
 }
 
-void fileChoice(int begCoord, std::vector<std::string> folders, int& cur, std::string& filepath)
+void fileChoice(int begCoord, std::vector<std::string> files, int& cur, std::string& filepath)
 {
-	movingArrow(begCoord, begCoord + folders.size(), cur, 0); // just show the arrow
+	movingArrow(begCoord, begCoord + files.size(), cur, 0); //показ стрелки выбора файла
 
 	bool chosenMenu(false);
 	while (!chosenMenu)
 	{
 		switch (int c = _getch())
-		{	// arrow code
-		case 224: cur = movingArrow(begCoord, begCoord + folders.size() - 1, cur, _getch()); break;
-		case '1':
 		{
-			filepath = filepath.substr(0, filepath.rfind("\\")); //return from last folder
-			chosenMenu = true;
-			cur = begCoord;
+		case 224: //код нажатия на стрелки на клавиатуре
+		{	
+			cur = movingArrow(begCoord, begCoord + files.size() - 1, cur, _getch());
 			break;
 		}
-		case '2':
-		{
-			filepath = "returnStart";
-			chosenMenu = true;
-			cur = begCoord;
-			break;
-		}
-		case '3':
+		case 27: //выход без выбора файла
 		{
 			chosenMenu = true;
 			cur = begCoord;
-			filepath = ""; //stop process
+			filepath = "";
 			break; 
 		}
-		case 13: //enter key
+		case 13: //окончательный выбор файла
 		{
-			if (folders.size() == 0)
-				filepath = filepath.substr(0, filepath.rfind("\\"));
-			else
-				filepath = filepath + "\\" + folders[cur - begCoord];
 			chosenMenu = true;
+			filepath = files[cur - begCoord];
 			cur = begCoord;
 			break;
 		}
@@ -270,15 +130,13 @@ void fileChoice(int begCoord, std::vector<std::string> folders, int& cur, std::s
 	}
 }
 
-void makeDirNFilesList(std::string filepath, std::vector<std::string>& folderList)
+void makeFilesList(std::string filepath, std::vector<std::string>& folderList)
 {
 	for (auto const& dirFolder : std::filesystem::directory_iterator(filepath + "\\"))
 	{
 		if ((dirFolder.is_regular_file()
 			and dirFolder.path().extension() == ".txt"
-			and defineFileType(dirFolder.path().string()) != none)
-
-			or dirFolder.is_directory())
+			and defineFileType(dirFolder.path().string()) != none))
 		{
 			std::string path = dirFolder.path().string();
 			path = path.substr(path.rfind("\\") + 1, path.size());
