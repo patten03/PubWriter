@@ -68,14 +68,12 @@ std::string findFile(std::string title)
 				throw std::invalid_argument("Директория пуста, ни одного файла не найдено");
 			std::cout << title << std::endl;
 
-			std::cout << curFilepath << std::endl;
-
 			std::vector<std::string> menu{
 				"Для выбора файла используйте ENTER и стрелочки ВВЕРХ ВНИЗ",
 				"Для выхода из меню нажмите ESC"
 			};
 
-			int begCoord = menu.size() + 1 + 1;
+			int begCoord = menu.size() + 1;
 			int cur(begCoord); //инициализация координаты стрелки выбора файла
 
 			for (const auto& line : menu)
