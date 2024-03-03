@@ -2,6 +2,7 @@
 
 void standartSettings()
 {
+	//установка русской кодировки для консоли
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	std::setlocale(LC_ALL, "ru");
@@ -10,12 +11,13 @@ void standartSettings()
 bool isNumber(const std::string& s)
 {
 	std::string::const_iterator it = s.begin();
-	while (it != s.end() && std::isdigit(*it)) ++it;
-	return !s.empty() && it == s.end();
+	while (it != s.end() && std::isdigit(*it)) ++it;//цикл прерывается если символ не цифра
+	return !s.empty() && it == s.end(); //возвращает false, если it не является последним символом
 }
 
 void ask(const std::vector<std::string> choice)
 {
+	//вывод меню как нумерованного списка
 	for (int i(0); i < choice.size(); i++)
 	{
 		std::cout << i + 1 << ". " << choice[i] << std::endl;
@@ -64,7 +66,7 @@ void menu()
 		<< "Для работы с файлами они должны находится в той же директории, что и программа" << std::endl << std::endl;
 
 
-	bool work = true;
+	bool work = true; //переменная цикла, которая отвечает за выход из программы
 
 	while (work)
 	{
@@ -92,6 +94,9 @@ void menu()
 std::string writeBook()
 {
 	Book book;
+	//при возвращении функцией inputString() значения ""
+	//функция writeBook() возвращает "quit" для выхода из
+	//цикла в функции writtingLoop()
 
 	inputString(book.name, "Введите название издания");
 	if (book.name == "")
@@ -104,7 +109,7 @@ std::string writeBook()
 		return "quit";
 
 	std::string year;
-	while (year == "")
+	while (year == "") //цикл работает пока не получит корректную дату
 	{
 		try
 		{
@@ -112,7 +117,7 @@ std::string writeBook()
 			std::cout << ">>";
 			std::getline(std::cin, year);
 
-			if (year == "0")
+			if (year == "0") //цифра 0 является символом для выхода из цикла
 				return "quit";
 
 			if (!isNumber(year))
@@ -127,6 +132,7 @@ std::string writeBook()
 		}
 	}
 
+	//возврат строки, которая будет введена в файл
 	return (book.name + "; "
 		+ book.kind + "; "
 		+ book.organization + "; "
@@ -136,6 +142,9 @@ std::string writeBook()
 std::string writePublisher()
 {
 	Publisher publisher;
+	//при возвращении функцией inputString() значения ""
+	//функция writeBook() возвращает "quit" для выхода из
+	//цикла в функции writtingLoop()
 
 	inputString(publisher.name, "Введите название издания");
 	if (publisher.name == "")
@@ -145,7 +154,7 @@ std::string writePublisher()
 		return "quit";
 
 	publisher.surname = "";
-	while (publisher.surname == "")
+	while (publisher.surname == "") //цикл работает пока не получит корректную фамилию
 	{
 		try
 		{
@@ -155,8 +164,8 @@ std::string writePublisher()
 			if (publisher.surname == "0")
 				return "quit";
 
-			checkNameSymbols(publisher.surname);
-			corrSurname(publisher.surname);
+			checkNameSymbols(publisher.surname); //Проверка на специальные символы
+			corrSurname(publisher.surname); //Изменения регистра всех букв фамилии
 		}
 		catch (std::exception& ex)
 		{
@@ -165,6 +174,7 @@ std::string writePublisher()
 		}
 	}
 
+	//возврат строки, которая будет введена в файл
 	return (publisher.name + "; "
 		+ publisher.address + "; "
 		+ publisher.surname);
@@ -172,7 +182,7 @@ std::string writePublisher()
 
 void inputString(std::string& value, const std::string& question)
 {
-	bool approved(false);
+	bool approved(false); //переменная цикла, становится true когда строка введена без ошибо
 	while (approved != true)
 	{
 		try
@@ -181,8 +191,10 @@ void inputString(std::string& value, const std::string& question)
 			std::cout << ">>";
 			std::getline(std::cin, value);
 			checkSemicolon(value);
-			if (value == "") throw std::invalid_argument("Пустое поле ввода!");
-			if (value == "0") value = "";
+			if (value == "") //ограничения пользователя от ввода пустых строк
+				throw std::invalid_argument("Пустое поле ввода!");
+			if (value == "0") //0 - символ выхода из цикла
+				value = "";
 
 			approved = true;
 		}
@@ -225,10 +237,11 @@ void newFile()
 	ask(fileTypeString);
 	int fileTypeInt = inputChoice(fileTypeString.size());
 
-	filename = space2underscore(filename);
-	filename = filename + "_" + currentTime();
+	filename = space2underscore(filename); //замена пробелов на <_> в названии файла
+	filename = filename + "_" + currentTime(); //добавление к концу названия время создания
 	std::string fullPath;
 
+	//добавление метки типа файла в его название
 	switch (fileType(fileTypeInt))
 	{
 	case book: fullPath = filename + "{b}" + ".txt"; break;
@@ -241,7 +254,7 @@ void newFile()
 
 void writingLoop(std::fstream& file, fileType type)
 {
-	std::string end("");
+	std::string end(""); //переменная цикла, отвечает за выход из записи данных в файл
 
 	std::string buff;
 	while (end != "quit")
@@ -256,7 +269,7 @@ void writingLoop(std::fstream& file, fileType type)
 		default: break;
 		}
 
-		if (buff == "quit")
+		if (buff == "quit") //получение команды "выход" из writeBook() или writePublisher()
 			end = buff;
 		else
 			file << buff << std::endl;
@@ -296,7 +309,9 @@ void createFile(const std::string& file, fileType choice)
 void editFile()
 {
 	std::string file = findFile("Выберите файл, который будете редактировать");
-	if (file == "") return;
+	
+	if (file == "") //выход в главное меню
+		return;
 
 	continueWriting(file);
 }
@@ -330,6 +345,8 @@ void continueWriting(const std::string& file)
 int inputChoice(const int& end)
 {
 	int choiceInt = _getch();
+
+	//цикл прерывается только при нажатии клавиши от 1 до <end>
 	while (choiceInt <= '0' or choiceInt > char(end + '0'))
 		choiceInt = _getch();
 

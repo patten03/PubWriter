@@ -2,6 +2,7 @@
 
 fileType defineFileType(const std::string& filename)
 {
+	//определеяется тип файла по количеству поле в строке
 	fileType result(none);
 	if (filename.find("{b}") != -1) result = book;
 	if (filename.find("{p}") != -1) result = publisher;
@@ -19,10 +20,12 @@ std::string currentTime()
 {
 	std::string res;
 
+	//получение времени на данный момент
 	std::time_t t = std::time(NULL);
 	std::tm now{};
 	localtime_s(&now, &t);
 
+	//преобразование времени в читаемый вид
 	std::string date = formatXX(now.tm_mday) + "-"
 		+ formatXX(now.tm_mon + 1) + "-"
 		+ std::to_string(now.tm_year + 1900);
@@ -39,6 +42,7 @@ std::string currentTime()
 
 std::string formatXX(int num)
 {
+	//задание стандартной ширины числового формата
 	if (num < 10)
 		return "0" + std::to_string(num);
 	else
@@ -55,9 +59,10 @@ void showDir(const std::vector<std::string>& dir)
 
 std::string findFile(std::string title)
 {
-	std::filesystem::path p = ".";
+	std::filesystem::path p = "."; //получение пути, где находится программа
 	std::string curFilepath = std::filesystem::absolute(p).string();
 
+	//выход из цикла происходит когда выбран файл или пользователь решил выйти в меню
 	while (curFilepath.find(".txt") == -1 and curFilepath != "")
 	{
 		try
@@ -74,7 +79,7 @@ std::string findFile(std::string title)
 			};
 
 			int begCoord = menu.size() + 1;
-			int cur(begCoord); //инициализация координаты стрелки выбора файла
+			int cur(begCoord); //текущая координата стрелки выбора файла
 
 			for (const auto& line : menu)
 			{
@@ -132,6 +137,7 @@ void makeFilesList(std::string filepath, std::vector<std::string>& folderList)
 {
 	for (auto const& dirFolder : std::filesystem::directory_iterator(filepath + "\\"))
 	{
+		//цикл сохраняет файлы с метками
 		if ((dirFolder.is_regular_file()
 			and dirFolder.path().extension() == ".txt"
 			and defineFileType(dirFolder.path().string()) != none))
@@ -147,20 +153,22 @@ void makeFilesList(std::string filepath, std::vector<std::string>& folderList)
 int movingArrow(int ymin, int ymax, int cur, int key)
 {
 	DWORD dw;
-	COORD here{ 0, cur };
+	COORD here{ 0, cur }; //координата стрелки в консоли (y - идет сверху вниз)
 	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (hStdOut == INVALID_HANDLE_VALUE)
 	{
 		printf("Invalid handle");
 	}
 
-	if (here.Y > ymin and key == 72)
+	if (here.Y > ymin and key == 72) //72 - код клавиши стрелка вниз
 	{
+		//стирание бывшей стрелки и изменение ее координаты
 		WriteConsoleOutputCharacter(hStdOut, L"  ", 2, here, &dw);
 		here.Y -= 1;
 	}
 	if (here.Y < ymax and key == 80)
 	{
+		//стирание бывшей стрелки и изменение ее координаты
 		WriteConsoleOutputCharacter(hStdOut, L"  ", 2, here, &dw);
 		here.Y += 1;
 	}
