@@ -43,6 +43,7 @@ void checkSemicolon(const std::string& word);
 void checkNameSymbols(const std::string& word);
 void checkSpecialSymbols(const std::string& word);
 void corrSurname(std::string& surname);
+void isAdequate(const std::string str);
 
 //ввода строк
 void inputString(std::string& value, const std::string& question);

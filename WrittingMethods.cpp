@@ -182,7 +182,7 @@ std::string writePublisher()
 
 void inputString(std::string& value, const std::string& question)
 {
-	bool approved(false); //переменна€ цикла, становитс€ true когда строка введена без ошибо
+	bool approved(false); //переменна€ цикла, становитс€ true когда строка введена без ошибок
 	while (approved != true)
 	{
 		try
@@ -191,6 +191,7 @@ void inputString(std::string& value, const std::string& question)
 			std::cout << ">>";
 			std::getline(std::cin, value);
 			checkSemicolon(value);
+			isAdequate(value); //ограничение на ввод строк без букв алфавита
 			if (value == "") //ограничени€ пользовател€ от ввода пустых строк
 				throw std::invalid_argument("Ќевозможно ввести пустую строку, повторите попытку");
 			if (value == "0") //0 - символ выхода из цикла
@@ -365,5 +366,22 @@ void corrSurname(std::string& surname)
 	for (int i(1); i < surname.size(); i++)
 	{
 		surname[i] = tolower(surname[i]);
+	}
+}
+
+void isAdequate(const std::string str)
+{
+	bool res(false);
+	if (str != "0") //символ выхода
+	{
+		std::string necessarySymbols("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+		necessarySymbols = necessarySymbols + "абвгдеЄжзийклмнопрстуфхцчшщъыьэю€јЅ¬√ƒ≈®∆«»… ЋћЌќѕ–—“”‘’÷„ЎўЏџ№Ёёя";
+		for (int i(0); i < necessarySymbols.size(); i++)
+		{
+			if (str.find(necessarySymbols[i]) != -1)
+				res = true; //если хоть один символ из алфавита найден;
+		}
+		if (!res) //если ни один из символов алфавита не найден
+			throw std::invalid_argument("ѕоле должно содержать хот€ бы одну букву алфавита"); 
 	}
 }
