@@ -27,7 +27,7 @@ void ask(const std::vector<std::string> choice)
 void checkSemicolon(const std::string& word)
 {
 	if (word.find(";") != -1)
-		throw std::invalid_argument("Строка не может содержать <;>!");
+		throw std::invalid_argument("Строка не может содержать <;>");
 }
 
 void checkNameSymbols(const std::string& word)
@@ -36,7 +36,7 @@ void checkNameSymbols(const std::string& word)
 	for (int i(0); i < forbiddenSymbols.size(); i++)
 	{
 		if (word.find(forbiddenSymbols[i]) != -1)
-			throw std::invalid_argument("Фамилия не может содержать специальные символы!");
+			throw std::invalid_argument("Фамилия не может содержать специальные символы");
 	}
 }
 
