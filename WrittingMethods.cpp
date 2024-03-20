@@ -46,7 +46,7 @@ void checkSpecialSymbols(const std::string& word)
 	for (int i(0); i < forbiddenSymbols.size(); i++)
 	{
 		if (word.find(forbiddenSymbols[i]) != -1)
-			throw std::invalid_argument("Файл не может содержать \\/:*?<>\"|");
+			throw std::invalid_argument("Название файла не может содержать \\/:*?<>\"|");
 	}
 }
 
@@ -113,15 +113,15 @@ std::string writeBook()
 	{
 		try
 		{
-			std::cout << "Введите год выпуска XXXX" << std::endl;
+			std::cout << "Введите год выпуска в числовом формате четырех цифр в диапазоне 1000-9999" << std::endl;
 			std::cout << ">>";
 			std::getline(std::cin, year);
 
 			if (year == "0") //цифра 0 является символом для выхода из цикла
 				return "quit";
 
-			if (!isNumber(year))
-				throw std::invalid_argument("Год выпуска не соответствует XXXX");
+			if (!isNumber(year) or year.length() != 4 or stoi(year) < 1000) //проверка на соотвествует формату
+				throw std::invalid_argument("Год выпуска не соответствует числовому формату четырех цифр в диапазоне 1000-9999");
 
 			book.year = stoi(year);
 		}
@@ -192,7 +192,7 @@ void inputString(std::string& value, const std::string& question)
 			std::getline(std::cin, value);
 			checkSemicolon(value);
 			if (value == "") //ограничения пользователя от ввода пустых строк
-				throw std::invalid_argument("Пустое поле ввода!");
+				throw std::invalid_argument("Невозможно ввести пустую строку, повторите попытку");
 			if (value == "0") //0 - символ выхода из цикла
 				value = "";
 
@@ -207,14 +207,15 @@ void inputString(std::string& value, const std::string& question)
 
 void newFile()
 {
-	std::cout << "Введите название файла" << std::endl;
 	std::string filename;
+	std::cout << "Введите название файла, для выхода из ввода введите 0" << std::endl;
+
 	bool approved(false);
-	while (!approved)
+	while (!approved) //проверка на корректность ввода названия файла
 	{
 		try
 		{
-			
+
 			std::cout << ">>";
 			std::getline(std::cin, filename);
 			checkSpecialSymbols(filename);
@@ -225,31 +226,34 @@ void newFile()
 			std::cout << ex.what() << std::endl;
 		}
 	}
+
 	system("cls");
-
-	std::cout << "Выберите тип файла" << std::endl;
-
-	std::vector<std::string> fileTypeString = {
-	"Создать файл издания",
-	"Создать файл редакции"
-	};
-
-	ask(fileTypeString);
-	int fileTypeInt = inputChoice(fileTypeString.size());
-
-	filename = space2underscore(filename); //замена пробелов на <_> в названии файла
-	filename = filename + "_" + currentTime(); //добавление к концу названия время создания
-	std::string fullPath;
-
-	//добавление метки типа файла в его название
-	switch (fileType(fileTypeInt))
+	if (filename != "0") //выход из цикла названия файла по вводу служебного символа
 	{
-	case book: fullPath = filename + "{b}" + ".txt"; break;
-	case publisher: fullPath = filename + "{p}" + ".txt"; break;
-	default: break;
-	}
+		std::cout << "Выберите тип файла" << std::endl;
 
-	createFile(fullPath, fileType(fileTypeInt));
+		std::vector<std::string> fileTypeString = {
+		"Создать файл издания",
+		"Создать файл редакции"
+		};
+
+		ask(fileTypeString);
+		int fileTypeInt = inputChoice(fileTypeString.size());
+
+		filename = space2underscore(filename); //замена пробелов на <_> в названии файла
+		filename = filename + "_" + currentTime(); //добавление к концу названия время создания
+		std::string fullPath;
+
+		//добавление метки типа файла в его название
+		switch (fileType(fileTypeInt))
+		{
+		case book: fullPath = filename + "{b}" + ".txt"; break;
+		case publisher: fullPath = filename + "{p}" + ".txt"; break;
+		default: break;
+		}
+
+		createFile(fullPath, fileType(fileTypeInt));
+	}
 }
 
 void writingLoop(std::fstream& file, fileType type)
