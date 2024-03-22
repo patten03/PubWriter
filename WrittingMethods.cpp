@@ -191,9 +191,10 @@ void inputString(std::string& value, const std::string& question)
 			std::cout << ">>";
 			std::getline(std::cin, value);
 			checkSemicolon(value);
-			isAdequate(value); //ограничение на ввод строк без букв алфавита
 			if (value == "") //ограничения пользователя от ввода пустых строк
 				throw std::invalid_argument("Невозможно ввести пустую строку, повторите попытку");
+			isAdequate(value); //ограничение на ввод строк без букв алфавита
+
 			if (value == "0") //0 - символ выхода из цикла
 				value = "";
 
